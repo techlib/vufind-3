@@ -110,6 +110,13 @@ class Loader extends \VuFind\ImageLoader
      * @var string
      */
     protected $upc = null;
+    
+    /**
+     * UniqueID NTK
+     *
+     * @var string
+     */
+    protected $uid = null;
 
     /**
      * User size parameter
@@ -183,6 +190,7 @@ class Loader extends \VuFind\ImageLoader
             'issn' => null,
             'oclc' => null,
             'upc' => null,
+            'uid' => null,
         ];
     }
 
@@ -205,6 +213,7 @@ class Loader extends \VuFind\ImageLoader
             'issn' => $args[6],
             'oclc' => $args[7],
             'upc' => $args[8],
+            'uid' => $args[9],
         ];
     }
 
@@ -227,6 +236,7 @@ class Loader extends \VuFind\ImageLoader
         }
         $this->oclc = $settings['oclc'];
         $this->upc = $settings['upc'];
+        $this->uid = $settings['uid'];
         $this->type = preg_replace('/[^a-zA-Z]/', '', $settings['type']);
         $this->size = $settings['size'];
     }
@@ -297,7 +307,10 @@ class Loader extends \VuFind\ImageLoader
             return $this->getCachePath($this->size, 'OCLC' . $ids['oclc']);
         } else if (isset($ids['upc'])) {
             return $this->getCachePath($this->size, 'UPC' . $ids['upc']);
+        } else if (isset($ids['uid'])) {
+            return $this->getCachePath($this->size, 'UID' . $ids['uid']);
         }
+
         throw new \Exception('Unexpected code path reached!');
     }
 
@@ -320,6 +333,9 @@ class Loader extends \VuFind\ImageLoader
         }
         if ($this->upc && strlen($this->upc) > 0) {
             $ids['upc'] = $this->upc;
+        }
+        if ($this->uid && strlen($this->uid) > 0) {
+            $ids['uid'] = $this->uid;
         }
         return $ids;
     }
