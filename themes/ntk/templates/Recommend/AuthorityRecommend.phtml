@@ -1,0 +1,54 @@
+<?
+    $data = $this->recommend->getRecommendations();
+    $results = $this->recommend->getResults();
+    $topFacetSettings = array(
+        'rows' => '2',
+        'cols' => '3'
+    );
+    $possible = array('narrower', 'broader','see_also');
+?>
+
+<div class="well well-sm">
+    <div class="well-title">
+        <strong><?=$this->transEsc('Amend subject search')?>:</strong>
+    </div>
+<?
+    for ($i = 0; $i < count($possible);$i++) {
+        if (!empty($data[0][$possible[$i]])) {
+            echo '<div ';
+            switch($possible[$i]){
+                case 'narrower':
+                    echo 'class="narrower_psh">';
+                    break;
+                case 'broader':
+                    echo 'class="broader_psh">';
+                    break;
+                case 'see_also':
+                    echo 'class="seealso_psh">';
+                    break;
+            }
+            echo '<strong>';
+            echo $this->transEsc($possible[$i]);
+            echo ':</strong></div>';
+            echo '<div class="row">';
+                $iter=1;$corner=$topFacetSettings['rows']*$topFacetSettings['cols'];
+                foreach ($data[0][$possible[$i]] as $key => $spec) {
+                    $url = $this->url($results->getOptions()->getSearchAction())
+                        . $results->getUrlQuery()->replaceTerm($results->getParams()->getDisplayQuery(), $spec);
+
+                    echo '<div class="col-xs-4">';
+                        echo '<span class="badge-tag">';
+                            echo '<a href="' . $url . '">' . $spec . '</a>';
+                         echo '</span>';
+                    echo '</div>';
+
+                    if ($iter%$topFacetSettings['cols'] == 0 && $iter > 0){
+                        echo '</div><div class="row">';
+                    }
+                    $iter++;
+                }
+            echo '</div>';
+        }
+    }
+?>
+</div>

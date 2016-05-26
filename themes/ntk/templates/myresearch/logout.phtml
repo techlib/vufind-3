@@ -1,0 +1,97 @@
+<?
+// Set page title.
+$this->headTitle($this->translate('Logout'));
+
+// Disable top search box -- this page has a special layout.
+$this->layout()->searchbox = false;
+
+// Set default value if necessary:
+if (!isset($this->searchClassId)) {
+  $this->searchClassId = 'Solr';
+}
+
+// Load search actions and settings (if any):
+$options = $this->searchOptions($this->searchClassId);
+$basicSearch = $options->getSearchAction();
+$advSearch = $options->getAdvancedSearchAction();
+
+$this->layout()->breadcrumbs = false;
+?>
+<div class="row" style="padding-top:37px;">
+  <div class="col-xs-12">
+    <!--      DM - re-design - vytezeno z searchbox.phtml -->
+    <? $searchTabs = $this->searchtabs($this->searchClassId, $this->lookfor, $this->searchIndex, $this->searchType); ?>
+    <? if (count($searchTabs) > 0): ?>
+      <ul class="nav nav-tabs panel-tabs-grey">
+        <? foreach ($searchTabs as $tab): ?>
+          <li<?=$tab['selected'] ? ' class="active"' : ''?>>
+            <a href="<?=$tab['selected'] ? '' : $this->escapeHtmlAttr($tab['url'])?>"><?=$this->transEsc($tab['label']); ?></a>
+          </li>
+        <? endforeach; ?>
+      </ul>
+    <? endif; ?>
+    <div class="alert alert-success"><?=$this->translate('logout_success')?></div>
+    <div class="searchHomeContent panel panel-hero panel-grey">
+      <? if ($this->ils()->getOfflineMode() == "ils-offline"): ?>
+        <div class="alert alert-warning">
+          <h2><?=$this->transEsc('ils_offline_title')?></h2>
+          <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
+          <p><?=$this->transEsc('ils_offline_home_message')?></p>
+          <? $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
+          <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
+        </div>
+      <? endif; ?>
+
+      <?=$this->render("search/searchbox.phtml")?>
+
+    </div>
+  </div><!-- /col -->
+</div><!-- /row -->
+
+<? $facetList = is_object($this->results) ? $this->results->getFacetList() : array(); ?>
+<? if (isset($facetList) && is_array($facetList)): ?>
+  <div class="row">
+    <? foreach ($facetList as $field => $details): ?>
+      <? $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
+      <div class="<?=$field=='callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
+        <h4><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></h4>
+        <div class="row">
+          <ul class="list-unstyled <?=$field == "callnumber-first" ? 'col-sm-6' : 'col-sm-12' ?>">
+            <? /* Special case: two columns for LC call numbers... */ ?>
+            <? if ($field == "callnumber-first"): ?>
+            <? $i = 0; foreach ($sortedList as $url => $value): ?>
+            <? if (!empty($value)): ?>
+              <li><a href="<?=$url?>"><?=$this->escapeHtml($value)?></a></li>
+            <? else: $i--; ?>
+            <? endif; ?>
+            <? if (++$i == 10): ?>
+          </ul><ul class="list-unstyled col-sm-6">
+            <? endif; ?>
+            <? endforeach; ?>
+            <? /* Special case: collections */ ?>
+            <? elseif ($field == 'hierarchy_top_title'): ?>
+              <? $i = 0; foreach ($sortedList as $url => $value): ?>
+                <? if (++$i > 10): ?>
+                  <li><a class="btn btn-default btn-sm" href="<?=$this->url('collections-home')?>"><?=$this->transEsc("More options")?>...</a></li>
+                  <? break; ?>
+                <? else: ?>
+                  <li><a href="<?=$this->url('collections-bytitle')?>?title=<?=urlencode($value)?>"><?=$this->escapeHtml($value)?></a></li>
+                <? endif; ?>
+              <? endforeach; ?>
+            <? else: ?>
+              <? $i = 0; foreach ($sortedList as $url => $value): ?>
+                <? if (++$i > 10): ?>
+                  <li class="list-more"><a class="btn btn-default btn-sm" href="<?=$this->url($advSearch)?>"><?=$this->transEsc("More options")?>...</a></li>
+                  <? break; ?>
+                <? elseif (!empty($value)): ?>
+                  <li><a href="<?=$url?>"><?=$this->transEsc($value)?></a></li>
+                <? else: $i--; ?>
+                <? endif; ?>
+              <? endforeach; ?>
+            <? endif; ?>
+          </ul>
+        </div>
+      </div>
+    <? endforeach; ?>
+  </div>
+<? endif; ?>

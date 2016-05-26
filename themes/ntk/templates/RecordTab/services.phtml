@@ -1,0 +1,65 @@
+<?
+$user = $this->auth()->isLoggedIn();
+$patron = $this->auth()->storedCatalogLogin();
+$registration_code = $this->auth()->getRegistration($patron);
+$title = $this->driver->getShortTitle();
+$author = $this->driver->getPrimaryAuthor();
+$issn = $this->driver->getCleanISSN();
+$isbn = $this->driver->getCleanISBN();
+$userGroup = $this->tab->getUserGroup($registration_code);
+preg_match_all('/ ?\d{5} /', $patron['address2'], $psc);
+$address2 = preg_split('/ ?\d{5} /', $patron['address2']);
+$params = array(
+    "id" => $patron['id'],
+    "firstname" => $patron['firstname'],
+    "lastname" => $patron['lastname'],
+    "address1" => $patron['address1'],
+    "address2" => $address2[1],
+    "psc" => $psc[0][0],
+    "email" => $patron['email'],
+    "phone" => $patron['phone'],
+    "status" => $userGroup['status'],
+    "title" => $title,
+    "author" => $author,
+    "issn" => $issn,
+    "isbn" => $isbn,
+);
+$params = http_build_query($params);
+$format = $this->driver->getFormats();
+
+$id = $this->driver->getUniqueId();
+$controllerClass = 'controller:' . $this->record($this->driver)->getController();
+?>
+
+<? if ($user): ?>
+    <h2>prihlaseny uzivatel - kategorie <?=$registration_code?></h2>
+
+        <?=$userGroup['code']?> - <?=$userGroup['role']?>
+    <br>
+
+    <? if ($format[0] == 'Book'): ?>
+        EDD - elektronické dodávání dokumentů<br>
+        <a id="copy-record" class="btn btn-sm btn-default modal-link <?=$controllerClass?>" href="<?=$this->url('record-copy', array('id'=>$id)) ?>" title="<?=$this->transEsc('Získat papírovou kopii')?>"><i class="fa fa-copy"></i> <?=$this->transEsc('Získat papírovou kopii')?></a></li>
+    <? endif; ?>
+
+<? else: ?>
+    <h2>neprihlaseny uzivatel -
+    <a id="loginOptions" class="btn tab-up" href="<?=$this->url('myresearch-userlogin')?>" ><i class="glyphicon glyphicon-log-in"></i> <?=$this->transEsc("Login")?></a>
+    </h2>
+    <table>
+        <tr>
+            <td>
+                <ul>
+                    <li><h3>dostupne pro neprihlaseneho uzivatele</h3></li>
+                    <ul>
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                    </ul>
+                </ul>
+            </td>
+        </tr>
+    </table>
+<? endif; ?>
+
+

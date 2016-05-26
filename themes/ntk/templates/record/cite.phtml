@@ -1,0 +1,17 @@
+<?
+  // Set page title.
+  $this->headTitle($this->translate('Record Citations'));
+
+  // Set up breadcrumbs:
+  $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
+    . '<li>' . $this->recordLink()->getBreadcrumb($this->driver) . '</li> '
+    . '<li class="active">' . $this->transEsc('Record Citations') . '</li>';
+
+  $raw = $this->driver->getRawData();
+  $sysno = $raw['id'];
+?>
+
+<!-- NTK pouziva Citace PRO -->
+<iframe width="100%" frameborder="0" src="https://www.citacepro.com/api/ntk/citace/<?=$sysno?>">
+  <p>Your browser does not support iframes.</p>
+</iframe>

@@ -1,0 +1,160 @@
+<?=$this->doctype('HTML5')?>
+<html lang="<?=$this->layout()->userLang?>">
+  <head>
+    <?$this->headThemeResources()?>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <?=$this->headMeta()?>
+    <?=$this->headTitle()?>
+    <?=$this->headLink()?>
+    <?=$this->headStyle()?>
+
+    <!-- Respond.js IE8 support of HTML5 elements and media queries -->
+     <!--[if lt IE 9]>
+        <script src="/vufind/themes/ntk/js/assets/respond.min.js"></script>
+     <![endif]-->
+
+    <!--[if lt IE 9]>
+	<script src="/vufind/themes/ntk/js/assets/jquery.placeholder.min.js">
+	</script>
+	<script>
+	      (function($){
+        	$('[placeholder]').placeholder();
+	      })(jQuery);
+	</script>
+    <![endif]-->
+
+<?
+      // Set global path for Javascript code:
+      $this->headScript()->prependScript("path = '" . rtrim($this->url('home'), '/') . "';");
+
+      // Deal with cart stuff:
+      if (!isset($this->renderingError)) {
+        $cart = $this->cart();
+        $this->jsTranslations()->addStrings(
+          array(
+            'bulk_email_success' => 'bulk_email_success',
+            'bulk_save_success' => 'bulk_save_success',
+            'close' => 'close',
+            'loading' => 'Loading',
+            'sms_success' => 'sms_success'
+          )
+        );
+        if ($cart->isActive()) {
+          $this->headScript()->appendFile("vendor/cookies.js");
+          $this->headScript()->appendFile("cart.js");
+          $this->jsTranslations()->addStrings(
+            array(
+              'bulk_noitems_advice' => 'bulk_noitems_advice',
+              'confirmDelete' => 'confirm_delete',
+              'confirmEmpty' => 'bookbag_confirm_empty',
+              'viewBookBag' => 'View Book Bag',
+              'addBookBag' => 'Add to Book Bag',
+              'removeBookBag' => 'Remove from Book Bag',
+              'itemsAddBag' => 'items_added_to_bookbag',
+              'itemsInBag' => 'items_already_in_bookbag',
+              'bookbagMax' => $cart->getMaxSize(),
+              'bookbagFull' => 'bookbag_full_msg',
+              'bookbagStatusFull' => 'bookbag_full',
+            )
+          );
+        }
+        $this->headScript()->appendScript($this->jsTranslations()->getScript());
+      }
+
+      // Session keep-alive
+      if ($this->KeepAlive()) {
+          $this->headScript()->appendScript('var keepAliveInterval = '
+            . $this->KeepAlive());
+          $this->headScript()->appendFile("keep_alive.js");
+      }
+    ?>
+    <?=$this->headScript()?>
+    <!-- schova modalni okno, ktere se zobrazuje pri nacitani stranky s historii vypujcek -->
+    <script>
+        $(window).load(function() {
+            /** this is come when complete page is fully loaded, including all frames, objects and images **/
+            $('#modal').modal('hide');
+        });
+    </script>
+  </head>
+  <body>
+    <? // Set up the search box -- there are three possible cases:
+      // 1. No search box was set; we should default to the normal box
+      // 2. It was set to false; we should display nothing
+      // 3. It is set to a custom string; we should display the provided version
+      // Set up default search box if no data was provided from the template;
+      // this covers case 1.  Cases 2 and 3 are then covered by logic below.
+      if (!isset($this->layout()->searchbox)) {
+        $this->layout()->searchbox = $this->render('search/searchbox.phtml');
+      }
+    ?>
+
+    <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
+<!--    HLAVICKA    -->
+    <?=$this->render('header.phtml')?>
+<!--    TELO  -->
+    <div id="content" class="l-body" role="main">
+      <div class="container">
+<!--    NAVIGACNI PANEL    -->
+        <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
+          && !empty($this->layout()->breadcrumbs)
+          && $this->layout()->breadcrumbs !== false
+        ): ?>
+        <div class="breadcrumb-panel">
+          <ol class="breadcrumb hidden-print">
+          <? if(is_array($this->layout()->breadcrumbs)): ?>
+            <? if(count($this->layout()->breadcrumbs) > 1): ?>
+              <?=$this->render('breadcrumbs/multi.phtml', array(
+                  'parents' => $this->layout()->breadcrumbs,
+                  'title'   => $this->layout()->title,
+                  'end'     => $this->layout()->breadcrumbEnd,
+                  'from'    => $this->layout()->from
+                )) ?>
+            <? else: ?>
+              <?=$this->render('breadcrumbs/default.phtml', array(
+                  'parents' => $this->layout()->breadcrumbs,
+                  'title'   => $this->layout()->title
+                )) ?>
+            <? endif; ?>
+          <? else: ?>
+              <li><a href=<?=$this->url('home')?>><?=$this->transEsc('Home')?></a></li>
+            <?=$this->layout()->breadcrumbs ?>
+          <? endif; ?>
+          </ol>
+<!--    ukoncovaci div je pro detail zaznamu v jine sablone    -->
+        <? if ((strpos($_SERVER["REQUEST_URI"], 'Record') == true) && (strpos($_SERVER["REQUEST_URI"], 'Save') == false) && (strpos($_SERVER["REQUEST_URI"], 'Save') == false) && (strpos($_SERVER["REQUEST_URI"], 'Email') == false) && (strpos($_SERVER["REQUEST_URI"], 'Cite') == false) && (strpos($_SERVER["REQUEST_URI"], 'AddTag') == false) && (strpos($_SERVER["REQUEST_URI"], 'Records') == false) && (strpos($_SERVER["REQUEST_URI"], 'Hold') == false)): ?>
+        <? else: ?>
+            </div>
+        <? endif; ?>
+
+        <? endif; ?>
+<!--    VNITREK STRANKY  -->
+        <?=$this->layout()->content ?>
+      </div>
+    </div>
+
+<!--    PATICKA -->
+    <div class="l-footer">
+      <div class="container">
+        <?=$this->render('footer.phtml')?>
+        <?=$this->layout()->poweredBy ?>
+      </div>
+    </div>
+
+    <!-- MODAL IN CASE WE NEED ONE -->
+    <div id="modal" class="modal fade hidden-print" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 id="modalTitle" class="modal-title"></h4>
+          </div>
+          <div class="modal-body"><?=$this->transEsc('Loading') ?>...</div>
+        </div>
+      </div>
+    </div>
+    <?=$this->googleanalytics()?>
+  </body>
+</html>

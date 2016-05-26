@@ -1,0 +1,63 @@
+<? $comments = $this->driver->getComments();
+
+  $isbn = $this->driver->getCleanISBN();
+  // API obalkyknih.cz
+  $addr = 'http://cache1.obalkyknih.cz/api/books?multi=[{"isbn":"'.$isbn.'"}]&pretty=1';
+  $content = file_get_contents( $addr );
+  if (preg_match_all('/"([^"]+)": (\d{1}|"([^"]+)")/', $content, $m)) {
+
+  }
+
+  // exists user comments? depends on field 'created'
+  $comm = null;
+  for ($i = 0; $i < sizeof($m[1]); $i++) {
+    if($m[1][$i] == "created") {
+      // show user comments
+      $comm = 1;
+      break;
+    }
+  }
+?>
+<!-- no user comments in db neither in API obalkyknih.cz -->
+<? if ((empty($comments) || count($comments) == 0) && !($comm)): ?>
+  <div class="alert alert-info"><?=$this->transEsc('Be the first to leave a comment')?>!</div>
+<? else: ?>
+  <!-- show user comments from db -->
+  <? foreach ($comments as $comment): ?>
+    <div class="comment row">
+      <div class="col-sm-3 name">
+<!--        <strong>--><?//=$this->escapeHtml(trim($comment->firstname . ' ' . $comment->lastname))?><!--</strong><br/>-->
+        <small>
+          <?=$this->escapeHtml($comment->created)?>
+          <? if (($user = $this->auth()->isLoggedIn()) && $comment->user_id == $user->id): ?>
+            <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'DeleteComment')?>?delete=<?=urlencode($comment->id)?>" id="recordComment<?=$this->escapeHtml($comment->id)?>" class="delete text-danger"><?=$this->transEsc('Delete')?></a>
+          <? endif; ?>
+        </small>
+      </div>
+      <div class="col-sm-9">
+        <?=$this->escapeHtml($comment->comment)?>
+      </div>
+    </div>
+    <br/>
+  <? endforeach; ?>
+  <!-- show user comments from Api obalkyknih.cz -->
+  <?
+    for ($i = 0; $i < sizeof($m[1]); $i++) {
+      if($m[1][$i] == "created") {
+        echo '<div class="comment row">';
+          echo "<div class='col-sm-3 name'>";
+            echo '<small>';
+              $date_c = str_replace('T'," ",$m[2][$i]);
+              print_r(str_replace('"',"",$date_c));
+              print_r('<br/>'.str_replace('"',"",$m[2][$i+1]));
+            echo '</small>';
+          echo '</div>';
+          echo '<div class="col-sm-9">';
+            print_r(str_replace('"',"",$m[2][$i+3]));
+          echo '</div>';
+        echo '</div>';
+        echo '<br/>';
+      }
+    }
+  ?>
+<? endif; ?>

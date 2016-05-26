@@ -1,0 +1,38 @@
+<?
+// Set page title.
+$this->headTitle($this->translate('Preview') . ': ' . $this->driver->getBreadcrumb());
+
+$id = $this->driver->getUniqueID();
+
+// Links with pictures on this site
+$addr = 'http://aleph.techlib.cz/cgi-bin/obrazek.pl?sn='.$id;
+$links = file_get_contents( $addr );
+
+// Pattern starts with "http" and ends with ".jpg" or ".JPG"
+$pattern = '/http.{0,100}\.(JPG|jpg)/';
+
+// Each link in 2D-array named url
+$count = preg_match_all( $pattern, $links, $url);
+
+// One array for small and one for big pics
+$pics= array();
+$thumbs= array();
+
+for ($i=0; $i<$count; $i++){
+        // is this thumbnail ?
+        if (strpos($url[0][$i], 'thumb')){
+                $thumbs[$i]=$url[0][$i];
+        }else{
+                $pics[$i]=$url[0][$i];
+        }
+}
+
+// Alphabetical sorting
+sort($pics);
+sort($thumbs);
+?>
+
+<? foreach ($thumbs as $key => $value): ?>
+    <a href=<?=$pics[$key]?>><img src=<?=$thumbs[$key]?>></a>
+<? endforeach; ?>
+

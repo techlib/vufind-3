@@ -1,0 +1,26 @@
+<h3><?=$this->transEsc('Similar Items')?></h3>
+<? $similarRecords = $this->related->getResults(); ?>
+<? if (!empty($similarRecords)): ?>
+  <ul class="list-group list-group-simple">
+    <? foreach ($similarRecords as $data): ?>
+      <li class="list-group-item">
+        <? $formats = $data->getFormats(); ?>
+        <a href="<?=$this->recordLink()->getUrl($data)?>">
+          <i class="glyphicon <? if (count($formats) > 0): ?> glyphicon-<?=preg_replace('/[^a-z0-9]/', '', strtolower($formats[0]))?>" title="<?=$formats[0] ?><? endif; ?>"></i>
+          <?=$this->escapeHtml($data->getTitle())?>
+        </a>
+        <br/>
+        <small>
+        <? $author = $data->getPrimaryAuthor(); if (!empty($author)): ?>
+          <strong><?=$this->transEsc('by')?>:</strong> <?=$this->escapeHtml($author);?>
+        <? endif; ?>
+        <? $pubDates = $data->getPublicationDates(); if (!empty($pubDates)): ?>
+          <strong><?=$this->transEsc('Published')?>:</strong> (<?=$this->escapeHtml($pubDates[0])?>)
+        <? endif; ?>
+        </small>
+      </li>
+    <? endforeach; ?>
+  </ul>
+<? else: ?>
+  <p><?=$this->transEsc('Cannot find similar records')?></p>
+<? endif; ?>

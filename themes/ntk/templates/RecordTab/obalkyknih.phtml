@@ -1,0 +1,74 @@
+<?
+// Set page title.
+$this->headTitle($this->translate('Obalkyknih') . ': ' . $this->driver->getBreadcrumb());
+
+$isbn = $this->driver->getCleanISBN();
+
+//$addr = 'http://cache1.obalkyknih.cz/api/books?multi=[{"isbn":"'.$isbn.'"}]&pretty=1';
+$addr = 'http://cache1.obalkyknih.cz/api/books?multi=[{"isbn":"9788073628642"}]&pretty=1';
+
+$content = file_get_contents( $addr );
+
+
+
+                if (preg_match_all('/"([^"]+)": (\d{1}|"([^"]+)")/', $content, $m)) {
+
+                }
+
+
+for ($i = 0; $i < sizeof($m[1]); $i++) {
+
+    if($m[1][$i] == "created"){
+
+        print_r($m[2][$i]." : ".$m[2][$i+3]."</br></br>");
+
+    }
+
+
+}
+
+
+//print_r($m[1][20]);
+//print_r($m[2][20]);
+
+//print_r($content);
+
+
+
+//$huh = str_replace('": "', "=", $content);
+//$huh = str_replace('",', "&", $huh);
+//$huh = str_replace('"', "", $huh);
+//$huh = str_replace(': ', "=", $huh);
+//
+//parse_str($huh);
+//print_r($huh);
+
+
+//print_r($huh);
+
+
+
+//$huh = array();
+//
+//        $myArray = explode(',', $content);
+//        foreach($myArray as $my_Array){
+//
+////                $myArray1 = explode(':', $my_Array);
+////                $myArray1
+//
+//                if (preg_match_all('/"([^"]+)"/', $my_Array, $m)) {
+//                        print_r($m[1]);
+//                }
+//
+//
+//
+////                $huh[$myArray1[0]] = $myArray1[1];
+//
+//        }
+//
+//print_r($huh);
+
+
+
+
+
