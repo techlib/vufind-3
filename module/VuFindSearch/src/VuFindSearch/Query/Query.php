@@ -74,6 +74,17 @@ class Query extends AbstractQuery
         $this->operator = $operator;
     }
 
+    //  DM - fce na doplneni Systemoveho cisla na 9-ti ciferne - zleva nuly
+    public function checkSysno($string)
+    {
+        $length_of_query = strlen($string);
+        $nules = 9 - $length_of_query;
+        for ($i=0;$i<$nules;$i++){
+            $string = '0' . $string;
+        }
+        return $string;
+    }
+
     /**
      * Return search string.
      *

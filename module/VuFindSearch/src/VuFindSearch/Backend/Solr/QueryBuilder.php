@@ -136,6 +136,11 @@ class QueryBuilder implements QueryBuilderInterface
 
         $string  = $query->getString() ?: '*:*';
 
+        // DM - pro vyhledavani v poli ID - kontrola uzivatelskeho vstupu - doplneni neuplneho ciselneho ID na 9-ti ciferne cislo
+        if (isset($_GET['type']) && $_GET['type'] == 'id'){
+            $string = $query->checkSysno($string);
+        }
+
         if ($handler = $this->getSearchHandler($query->getHandler(), $string)) {
             if (!$handler->hasExtendedDismax()
                 && $this->getLuceneHelper()->containsAdvancedLuceneSyntax($string)
