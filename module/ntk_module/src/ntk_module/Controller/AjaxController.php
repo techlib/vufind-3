@@ -39,6 +39,25 @@ use VuFind\Controller\AjaxController as AjaxControllerBase;
  */
 class AjaxController extends AjaxControllerBase
 {
+   /**
+     * Get the contents of a lightbox; note that unlike most methods, this
+     * one actually returns HTML rather than JSON.
+     *
+     * @return mixed
+     */
+    protected function getLightboxAjax()
+    {
+        // Turn layouts on for this action since we want to render the
+        // page inside a lightbox:
+        $this->layout()->setTemplate('layout/lightbox');
+
+        // Call the requested action:
+        return $this->forwardTo(
+            $this->params()->fromQuery('submodule'),
+            $this->params()->fromQuery('subaction')
+        );
+    }
+ 
     /**
      * Support method for getItemStatuses() -- when presented with multiple values,
      * pick which one(s) to send back via AJAX.
