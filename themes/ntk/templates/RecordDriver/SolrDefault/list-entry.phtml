@@ -1,7 +1,7 @@
 <?
   // Set up some convenience variables:
   $id = $this->driver->getUniqueId();
-  $source = $this->driver->getResourceSource();
+  $source = $this->driver->getSourceIdentifier();
   if (isset($this->list) && is_object($this->list)) {
     $list_id = $this->list->id;
     $user_id = $this->list->user_id;
@@ -40,17 +40,14 @@
 
     <small>
       <? if($this->driver->isCollection()): ?>
-        <?=implode('<br/>', $this->driver->getSummary()); ?>
+	<?=implode('<br>', array_map(array($this, 'escapeHtml'), $this->driver->getSummary())); ?>
       <? else: ?>
-        <? $summAuthor = $this->driver->getPrimaryAuthor(); if (!empty($summAuthor)): ?>
-        <span class="text-muted"><?=$this->transEsc('by')?>:</span>
-        <a href="<?=$this->record($this->driver)->getLink('author', $summAuthor)?>"><?
-          //$summHighlightedAuthor = $this->driver->getHighlightedAuthor();
-          echo !empty($summHighlightedAuthor)
-              ? $this->highlight($summHighlightedAuthor)
-              : $this->escapeHtml($summAuthor);
-        ?></a>
-        <? endif; ?>
+        <? $summAuthors = $this->driver->getPrimaryAuthors(); if (!empty($summAuthors)): ?>
+	<span class="text-muted"><?=$this->transEsc('by')?>:</span>
+	<? $authorCount = count($summAuthors); foreach ($summAuthors as $i => $summAuthor): ?>
+            <a href="<?=$this->record($this->driver)->getLink('author', $summAuthor)?>"><?=$this->escapeHtml($summAuthor)?></a><?=($i + 1 < $authorCount ? ';' : '') ?>
+        	<? endforeach; ?>
+      	<? endif; ?>
 
         <? $journalTitle = $this->driver->getContainerTitle(); $summDate = $this->driver->getPublicationDates(); ?>
         <? if (!empty($journalTitle)): ?>
@@ -86,13 +83,15 @@
       } ?>
 
     <? $listTags = ($this->usertags()->getMode() !== 'disabled') ? $this->driver->getTags(
-        $list_id, // get tags for all lists if no single list is selected
+	null === $list_id ? true : $list_id, // get tags for all lists if no single list is selected
         $user_id, 'tag'
        ) : array();
     ?>
     <? if (count($listTags) > 0): ?>
       <strong><?=$this->transEsc('Your Tags')?>:</strong>
-      <? $i = 0; foreach ($listTags as $tag): ?><?=($i++ == 0)?'':', '?><a href="<?=$this->currentPath() . $results->getUrlQuery()->addFacet('tags', $tag->tag)?>"><?=$this->escapeHtml($tag->tag)?></a><? endforeach; ?>
+      <? foreach ($listTags as $tag): ?>
+	<a href="<?=$this->currentPath() . $results->getUrlQuery()->addFacet('tags', $tag->tag)?>"><?=$this->escapeHtml($tag->tag)?></a>
+      <? endforeach; ?>
       <br/>
     <? endif; ?>
     <? $listNotes = $this->driver->getListNotes($list_id, $user_id); ?>
@@ -107,7 +106,7 @@
     <? if (count($this->lists) > 0): ?>
         <strong><?=$this->transEsc('Saved in')?>:</strong>
         <? $i=0;foreach($this->lists as $current): ?>
-            <a href="<?=$this->url('userList', array('id' => $current->id))?>"><?=$current->title?></a><? if($i++ < count($this->lists)-1): ?>,<? endif; ?>
+	    <a href="<?=$this->url('userList', array('id' => $current->id))?>"><?=$this->escapeHtml($current->title)?></a><? if($i++ < count($this->lists)-1): ?>,<? endif; ?>
         <? endforeach; ?>
         <br/>
     <? endif; ?>
@@ -129,20 +128,16 @@
             but even if we don't plan to display the link, we still want to get the $openUrl
             value for use in generating a COinS (Z3988) tag -- see bottom of file.
           */
-        $openUrl = $this->driver->getOpenURL();
-        //$openUrlActive = $this->driver->openURLActive('results');
-        $urls = $this->record($this->driver)->getLinkDetails();
+	$openUrl = $this->openUrl($this->driver, 'results');
+	$openUrlActive = $openUrl->isActive();
+	// Account for replace_other_urls setting
+	$urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+
         if ($openUrlActive || !empty($urls)):
       ?>
-        <? if ($openUrlActive): ?>
+	<? if ($openUrlActive): ?>
           <br/>
-          <?=$this->openUrl($openUrl)?>
-          <?
-            if ($this->driver->replaceURLsWithOpenURL()) {
-              // clear URL list if replace setting is active
-              $urls = array();
-            }
-          ?>
+          <?=$openUrl->renderTemplate()?>
         <? endif;?>
 
         <? if (!is_array($urls)) { $urls = array(); }
@@ -152,7 +147,6 @@
             <? endforeach; ?>
           <? endif; ?>
         <? endif; ?>
-
       <?=str_replace('class="', 'class="', $this->record($this->driver)->getFormatList())?>
 
       <? if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()): ?>
@@ -164,7 +158,7 @@
     <div class="result-actions">
 
       <? /* Use a different delete URL if we're removing from a specific list or the overall favorites: */
-      $deleteUrl = is_null($list_id)
+      $deleteUrl = null === $list_id
           ? $this->url('myresearch-favorites')
           : $this->url('userList', array('id' => $list_id));
       $deleteUrlGet = $deleteUrl . '?delete=' . urlencode($id) . '&amp;source=' . urlencode($source);
@@ -172,7 +166,7 @@
       $dLabel = 'delete-label-' . preg_replace('[\W]','-',$id);
       ?>
       <a href="<?=$this->url('myresearch-edit')?>?id=<?=urlencode($id)?>&amp;source=<?=urlencode($source)?><? if (!is_null($list_id)):?>&amp;list_id=<?=urlencode($list_id)?><? endif; ?>" class="edit tool btn btn-sm btn-default"><i class="fa fa-edit"></i> <?=$this->transEsc('Edit')?></a>
-      <?=$openUrl?'<span class="Z3988" title="'.$this->escapeHtmlAttr($openUrl).'"></span>':''?>
+      <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
     </div>
   </div>
 
