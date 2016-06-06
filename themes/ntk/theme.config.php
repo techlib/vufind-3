@@ -11,11 +11,13 @@ return array(
         'datepicker.css',
     ),
     'js' => array(
+        'vendor/base64.js:lt IE 10', // btoa polyfill
         'vendor/jquery.min.js',
         'vendor/bootstrap.min.js',
         'vendor/bootstrap-accessibility.min.js',
-        'vendor/typeahead.js',
         'vendor/rc4.js',
+        'vendor/validator.min.js',
+        'autocomplete.js',
         'common.js',
         'lightbox.js',
         'yahoo-dom-event.js',
@@ -36,11 +38,11 @@ return array(
         'factories' => array(
             'flashmessages' => 'VuFind\View\Helper\Bootstrap3\Factory::getFlashmessages',
             'layoutclass' => 'VuFind\View\Helper\Bootstrap3\Factory::getLayoutClass',
+            'recaptcha' => 'VuFind\View\Helper\Bootstrap3\Factory::getRecaptcha',
         ),
         'invokables' => array(
             'highlight' => 'VuFind\View\Helper\Bootstrap3\Highlight',
             'search' => 'VuFind\View\Helper\Bootstrap3\Search',
-            'vudl' => 'VuDL\View\Helper\Bootstrap3\VuDL',
         )
     )
 );
