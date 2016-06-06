@@ -60,7 +60,9 @@
             )
           );
         }
-        $this->headScript()->appendScript($this->jsTranslations()->getScript());
+        $this->headScript()->appendScript(
+            'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'
+        );
       }
 
       // Session keep-alive
@@ -69,6 +71,17 @@
             . $this->KeepAlive());
           $this->headScript()->appendFile("keep_alive.js");
       }
+    ?>
+    <?
+      $root = rtrim($this->url('home'), '/');
+      $translations = $this->jsTranslations()->getJSON();
+      $dsb = DEFAULT_SEARCH_BACKEND;
+      $setupJS = <<<JS
+VuFind.path = '{$root}';
+VuFind.defaultSearchBackend = '{$dsb}';
+VuFind.addTranslations({$translations});
+JS;
+      $this->headScript()->appendScript($setupJS);
     ?>
     <?=$this->headScript()?>
     <!-- schova modalni okno, ktere se zobrazuje pri nacitani stranky s historii vypujcek -->
