@@ -1,6 +1,6 @@
 <div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?>media-left">
     <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
-    <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
+    <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
 
       <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
         <? if ($summThumb = $this->record($this->driver)->getThumbnail()): ?>
@@ -14,40 +14,31 @@
 <div class="media-body">
       <h3 class="media-heading">
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
-        <?
-          $summHighlightedTitle = $this->driver->getHighlightedTitle();
-          $summTitle = $this->driver->getTitle();
-          if (!empty($summHighlightedTitle)) {
-            echo $this->highlight($this->addEllipsis($summHighlightedTitle, $summTitle));
-          } else if (!empty($summTitle)) {
-            echo $this->escapeHtml($this->truncate($summTitle, 180));
-          } else {
-            echo $this->transEsc('Title not available');
-          }
-        ?>
+            <?=$this->record($this->driver)->getTitleHtml()?> 
         </a>
       </h3>
 
       <small>
         <? if($this->driver->isCollection()): ?>
-          <?=implode('<br>', $this->driver->getSummary()); ?>
+          <?=implode('<br>', array_map(array($this, 'escapeHtml'), $this->driver->getSummary())); ?>
         <? else: ?>
-          <? $summAuthor = $this->driver->getPrimaryAuthor(); if (!empty($summAuthor)): ?>
+          <? $summAuthors = $this->driver->getPrimaryAuthorsWithHighlighting(); if (!empty($summAuthors)): ?>
           <span class="text-muted">
             <?=$this->transEsc('by')?>:
           </span>
-          <a href="<?=$this->record($this->driver)->getLink('author', $summAuthor)?>"><?
-            //$summHighlightedAuthor = $this->driver->getHighlightedAuthor();
-            echo !empty($summHighlightedAuthor)
-                ? $this->highlight($summHighlightedAuthor)
-                : $this->escapeHtml($summAuthor);
-          ?></a>
-          <? endif; ?>
+          <? $authorCount = count($summAuthors); foreach ($summAuthors as $i => $summAuthor): ?>
+            <a href="<?=$this->record($this->driver)->getLink('author', $this->highlight($summAuthor, null, true, false))?>"><?=$this->highlight($summAuthor)?></a><?=$i + 1 < $authorCount ? ',' : ''?>
+          <? endforeach; ?>
+        <? endif; ?>
 
           <? $journalTitle = $this->driver->getContainerTitle(); $summDate = $this->driver->getPublicationDates(); ?>
           <? if (!empty($journalTitle)): ?>
             <?=!empty($summAuthor) ? '<br />' : ''?>
-            <?=/* TODO: handle highlighting more elegantly here */ $this->transEsc('Published in') . ' <a href="' . $this->record($this->driver)->getLink('journaltitle', str_replace(array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'), '', $journalTitle)) . '">' . $this->highlight($journalTitle) . '</a>';?>
+              <?=$this->transEsc('Published in')?>
+              <? $containerSource = $this->driver->getSourceIdentifier(); ?>
+              <? $containerID = $this->driver->getContainerRecordID(); ?>
+              <? /* TODO: handle highlighting more elegantly here: */?>
+              <a href="<?=($containerID ? $this->recordLink()->getUrl("$containerSource|$containerID") : $this->record($this->driver)->getLink('journaltitle', str_replace(array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'), '', $journalTitle)))?>"><?=$this->highlight($journalTitle) ?></a>
             <?=!empty($summDate) ? ' (' . $this->escapeHtml($summDate[0]) . ')' : ''?>
           <? elseif (!empty($summDate)): ?>
           <span class="text-muted">
@@ -66,49 +57,65 @@
         <? endif; ?>
       </small><br>
 
+      <!-- not used in NTK
+      <? if(!$this->driver->isCollection()): ?>
+        <? if ($snippet = $this->driver->getHighlightedSnippet()): ?>
+          <? if (!empty($snippet['caption'])): ?>
+            <strong><?=$this->transEsc($snippet['caption']) ?>:</strong> ';
+          <? endif; ?>
+          <? if (!empty($snippet['snippet'])): ?>
+            <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet']) ?>...<span class="quoteend">&#8221;</span><br/>
+          <? endif; ?>
+        <? endif; ?>
+      <? endif; ?>
+      -->
+
       <?
       /* Display information on duplicate records if available */
-      $dedupData = $this->driver->getDedupData();
-      if ($dedupData): ?>
-      <div class="dedupInformation">
-      <?
-        $i = 0;
-        foreach ($dedupData as $source => $current) {
-          if (++$i == 1) {
-            ?><span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", array(), $source)?></a></span><?
-          } else {
-            if ($i == 2) {
-              ?> <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: <?
+      if ($dedupData = $this->driver->getDedupData()): ?>
+        <div class="dedupInformation">
+        <?
+          $i = 0;
+          foreach ($dedupData as $source => $current) {
+            if (++$i == 1) {
+              ?><span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", array(), $source)?></a></span><?
             } else {
-              ?>, <?
+              if ($i == 2) {
+                ?> <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: <?
+              } else {
+                ?>, <?
+              }
+              ?><a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", array(), $source)?></a><?
             }
-            ?><a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", array(), $source)?></a><?
           }
-        }
-        if ($i > 1) {
-          ?>)</span><?
-        }?>
-      </div>
+          if ($i > 1) {
+            ?>)</span><?
+          }?>
+        </div>
       <? endif; ?>
 
       <div class="callnumAndLocation ajax-availability hidden">
         <? if ($this->driver->supportsAjaxStatus()): ?>
+          <!-- not used in NTK
+          <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
+          <span class="callnumber ajax-availability hidden">
+            <?=$this->transEsc('Loading')?>...<br/>
+          </span>
+          -->
           <strong><?=$this->transEsc('Located')?>:</strong>
-
           <span class="location ajax-availability hidden">
             <?=$this->transEsc('Loading')?>...
           </span>
-
           <div class="locationDetails"></div>
         <? else: ?>
           <? $summCallNo = $this->driver->getCallNumber(); if (!empty($summCallNo)): ?>
             <strong><?=$this->transEsc('Call Number')?>:</strong> <?=$this->escapeHtml($summCallNo)?>
           <? endif; ?>
-	<? endif; ?>
+	    <? endif; ?>
 
-	<?=str_replace('class="', 'class="', $this->record($this->driver)->getFormatList())?>
+	    <?=str_replace('class="', 'class="', $this->record($this->driver)->getFormatList())?>
 
-	 <!-- zobrazeni statusu dostupnosti u vsech zaznamu -->
+	    <!-- zobrazeni statusu dostupnosti u vsech zaznamu -->
         <span class="status ajax-availability hidden">
           <span class="label label-default"><?=$this->transEsc('Loading')?>...</span>
         </span>
@@ -118,13 +125,13 @@
             but even if we don't plan to display the link, we still want to get the $openUrl
             value for use in generating a COinS (Z3988) tag -- see bottom of file.
           */
-        $openUrl = $this->driver->getOpenURL();
-        //$openUrlActive = $this->driver->openURLActive('results');
-        $urls = $this->record($this->driver)->getLinkDetails();
+        $openUrl = $this->openUrl($this->driver, 'results');
+        $openUrlActive = $openUrl->isActive();
+        // Account for replace_other_urls setting
+        $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         if ($openUrlActive || !empty($urls)): ?>
         <? if ($openUrlActive): ?>
-          <?=$this->openUrl($openUrl)?>
-          <? if ($this->driver->replaceURLsWithOpenURL()) $urls = array(); // clear URL list if replace setting is active ?>
+          <?=$openUrl->renderTemplate()?>
         <? endif; ?>
         <? if (!is_array($urls)) $urls = array();
           if(!$this->driver->isCollection()):
@@ -163,9 +170,11 @@
           $this->jsTranslations()->addStrings(array('qrcode_hide' => 'qrcode_hide', 'qrcode_show' => 'qrcode_show'));
         ?>
         <span class="hidden-xs">
-          <i class="fa fa-qrcode"></i> <a href="<?=$this->escapeHtmlAttr($QRCode);?>" class="qrcodeLink"><?=$this->transEsc('qrcode_show')?></a>
+          <i class="fa fa-fw fa-qrcode"></i> <a href="<?=$this->escapeHtmlAttr($QRCode);?>" class="qrcodeLink"><?=$this->transEsc('qrcode_show')?></a>      
           <div class="qrcode hidden">
-            <img alt="<?=$this->transEsc('QR Code')?>" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+            <script type="text/template" class="qrCodeImgTag">
+              <img alt="<?=$this->transEsc('QR Code')?>" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+            </script>
           </div><br/>
         </span>
       <? endif; ?>
@@ -186,14 +195,14 @@
         <? foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
           <div class="hierarchyTreeLink">
             <input type="hidden" value="<?=$this->escapeHtmlAttr($hierarchyID)?>" class="hiddenHierarchyId" />
-            <i class="fa fa-sitemap"></i>
-            <a class="hierarchyTreeLinkText modal-link" href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav" title="<?=$this->transEsc('hierarchy_tree')?>">
+            <i class="fa fa-fw fa-sitemap"></i>
+            <a class="hierarchyTreeLinkText" data-lightbox href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav" title="<?=$this->transEsc('hierarchy_tree')?>" data-lightbox-href="<?=$this->recordLink()->getTabUrl($this->driver, 'AjaxTab')?>?hierarchy=<?=urlencode($hierarchyID)?>" data-lightbox-post="tab=hierarchytree">
               <?=$this->transEsc('hierarchy_view_context')?><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
             </a>
           </div>
         <? endforeach; ?>
       <? endif; ?>
 
-      <?=$openUrl?'<span class="Z3988" title="'.$this->escapeHtmlAttr($openUrl).'"></span>':''?>
+      <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
 
 </div>
