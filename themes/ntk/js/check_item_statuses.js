@@ -92,15 +92,15 @@ function checkItemStatuses(container) {
         );
         
         // links
-            if (result.location == "V&Scaron;CHT &uacute;stavy"){
+            if (result.location == "V\u0160CHT \u00fastavy"){
+                item.find('.location').unwrap();
                 item.find('.location').empty().append("<a href='https://www.chemtk.cz/cs/82950-seznam-ustavnich-knihoven'>"+result.location+"</a>");
             } else if (result.location == "UCT departments"){
-                 item.find('.location').empty().append("<a href='https://www.chemtk.cz/en/82974-departmental-libraries'>"+result.location+"</a>");
+                item.find('.location').unwrap();
+                item.find('.location').empty().append("<a href='https://www.chemtk.cz/en/82974-departmental-libraries'>"+result.location+"</a>");
             } else if (result.location.indexOf("3D") > 0){ // studovna casopisu
-                item.find('.location').empty().append("<a href=''>"+result.location+"</a>");
-                item.find('.location').click(function() {
-                    return Lightbox.getByUrl('../periodicals.php');
-                });
+                item.find('.location').empty().append(result.location);
+                item.find('#linkhref').attr('data-lightbox-href', '../periodicals.php');
             } else if (
                     (result.location == "Unknown") || (result.location == "Nezn&aacute;mo") ||
                     (result.location == "Sklad historick&eacute;ho fondu") || (result.location == "Stack room of historical collection") ||
@@ -114,45 +114,33 @@ function checkItemStatuses(container) {
                     (result.location == "&Uacute;OCHB &uacute;stav") || (result.location == "IOCB department") ||
                     (result.location == "Book news, 4th floor") || (result.location == "Novinky, 4. NP")
                     ){
+                    item.find('.location').unwrap();
                     item.find('.location').empty().append(result.location);
             } else {
-                item.find('.location').empty().append("<a href=''>"+result.location+"</a>");
-                item.find('.location').click(function() {
-
+                item.find('.location').empty().append(result.location);
+                item.find('#linkhref').attr('data-lightbox-href', '../map.php?lcc=map' + result.callnumber);
                     var title = result.location;
                     if(typeof title === "undefined") {
                         title = $(this).html();
                     }
-
                     var p,s,r,vysledek,title_desc;
                     if (title.indexOf('Shelf') >= 0){
-                        p = 'floor';
-                        s = 'section';
-                        r = 'shelf';
-                        var patro = title.charAt(6);
-                        title_desc = p+': '+patro;
-                        var sekce = title.charAt(7);
-                        title_desc += ', '+s+': '+sekce;
-                        var regal = title.substr(8,3);
-                        title_desc += ', '+r+': '+regal;
+                      p = 'floor';
+                      s = 'section';
+                      r = 'shelf';
                     }else{
-                        p = 'patro';
-                        s = 'sekce';
-                        r = 'regál';
-                        var patro = title.charAt(13);
-                        title_desc = p+': '+patro;
-                        var sekce = title.charAt(14);
-                        title_desc += ', '+s+': '+sekce;
-                        var regal = title.substr(15,3);
-                        title_desc += ', '+r+': '+regal;
+                      p = 'patro';
+                      s = 'sekce';
+                      r = 'regál';
                     }
-
+                    var patro = title.charAt(6);
+                    title_desc = p+': '+patro;
+                    var sekce = title.charAt(7);
+                    title_desc += ', '+s+': '+sekce;
+                    var regal = title.substr(8,3);
+                    title_desc += ', '+r+': '+regal;
                     vysledek = title+' ('+title_desc+')';
-                    $('#modal .modal-title').html(vysledek);
-                    Lightbox.titleSet = true;
-
-                                return Lightbox.get('map','lcc',result.callnumber);
-                        });
+                item.find('#linkhref').attr('data-lightbox-title', vysledek);
             }
       }
     });
