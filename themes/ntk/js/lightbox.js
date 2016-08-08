@@ -15,9 +15,9 @@ VuFind.register('lightbox', function() {
     _modalBody.html(html);
     // Set or update title if we have one
     if (_lightboxTitle != '') {
-      var h2 = _modalBody.find('h2:first-child');
+      var h2 = _modalBody.find('h4:first-child');
       if (h2.length == 0) {
-        h2 = $('<h2/>').prependTo(_modalBody);
+        h2 = $('<h4/>').prependTo(_modalBody);
       }
       h2.text(_lightboxTitle);
       _lightboxTitle = '';

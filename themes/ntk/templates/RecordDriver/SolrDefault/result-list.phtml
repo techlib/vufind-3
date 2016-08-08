@@ -103,9 +103,11 @@
           </span>
           -->
           <strong><?=$this->transEsc('Located')?>:</strong>
+          <a id="linkhref" href='' data-lightbox data-lightbox-href='' data-lightbox-title=''>
           <span class="location ajax-availability hidden">
             <?=$this->transEsc('Loading')?>...
           </span>
+          </a>
           <div class="locationDetails"></div>
         <? else: ?>
           <? $summCallNo = $this->driver->getCallNumber(); if (!empty($summCallNo)): ?>

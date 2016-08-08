@@ -208,7 +208,7 @@ class AjaxController extends AjaxControllerBase
             'id' => $record[0]['id'],
             'availability' => ($available ? 'true' : 'false'),
             'availability_message' => $availability_message,
-            'location' => htmlentities($location, ENT_COMPAT, 'UTF-8'),
+            'location' => $location,
             'locationList' => false,
             'reserve' =>
                 ($record[0]['reserve'] == 'Y' ? 'true' : 'false'),
