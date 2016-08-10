@@ -99,3 +99,9 @@ var obalky = {
 YAHOO.util.Event.onDOMReady(function() {
   NTK.util.autoFocus();
 });
+
+function modalSize() {
+    $(".modal-dialog").css("width", "240px");
+    $(".modal-dialog").css("height", "340px");
+    $(".modal-body").css("padding-top", "10px");
+}

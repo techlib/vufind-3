@@ -286,7 +286,7 @@
       <? /* Display thumbnail if appropriate: */ ?>
       <? if ($largeThumb = $this->record($this->driver)->getThumbnail()): ?>
         <? $id = $this->driver->getUniqueId(); ?>
-        <a class="record-image thumbnail thumbnail-link" title="<?=$id?>" href="<?=$this->escapeHtmlAttr($largeThumb)?>">
+        <a class="record-image thumbnail" onclick="modalSize()" data-lightbox title="<?=$id?>" href="../img-box.php?uid=<?=$id?>">
           <img alt="<?=$this->transEsc('Cover Image')?>" class="recordcover" src="<?=$this->escapeHtmlAttr($largeThumb);?>"/>
         </a>
       <? else: ?>
