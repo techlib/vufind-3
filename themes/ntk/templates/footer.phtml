@@ -25,7 +25,7 @@
 
       <li><span class="nav-title"><?=$this->transEsc('Need Help?')?></span>
         <ul>
-          <li><a href="<?=$this->url('help-home')?>?topic=search" class="help-link" title="<?=$this->transEsc('Search Tips')?>"><?=$this->transEsc('Search Tips')?></a></li>
+          <li><a href="<?=$this->url('help-home')?>?topic=search" data-lightbox class="help-link" data-lightbox-title="<?=$this->transEsc('Search Tips')?>"><?=$this->transEsc('Search Tips')?></a></li>
           <?if ($this->layout()->userLang === 'cs'):?>
             <li><a href="https://www.techlib.cz/cs/2832-nasi-specialiste"><?=$this->transEsc('Ask a Librarian')?></a></li>
             <li><a href="https://www.techlib.cz/cs/2884-navody"><?=$this->transEsc('FAQs')?></a></li>
