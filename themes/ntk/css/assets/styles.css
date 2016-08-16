@@ -10238,7 +10238,7 @@ ul[class] li:before {
 @media (min-width: 768px) {
   .carousel-control,
   .carousel-control:hover {
-    background-image: none!important;
+    /*background-image: none!important;*/
     filter: none;
   }
   .carousel-control .icon-prev,
