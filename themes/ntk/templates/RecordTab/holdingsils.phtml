@@ -1,19 +1,28 @@
 <?
     // Set up convenience variables:
 	$account = $this->auth()->getManager();
+    $user = $account->isLoggedIn();
+    $openUrl = $this->openUrl($this->driver, 'holdings');
+    $openUrlActive = $openUrl->isActive();
+    // Account for replace_other_urls setting
+    $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+    $offlineMode = $this->ils()->getOfflineMode();
+    try {
+        $holdings = $this->tab->getRealTimeHoldings();
+    } catch (\VuFind\Exception\ILS $e) {
+        $holdings = [];
+        $offlineMode = 'ils-offline';
+    }
+    // Set page title.
+    $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
+    // NTK addition - holdings filter
 	$filters = $this->tab->getFilters();
 	$selectedFilters = $this->tab->getSelectedFilters();
 	$availableFilters = $this->tab->getAvailableFilters();
-    $user = $account->isLoggedIn();
-	$holdings = $this->tab->getRealTimeHoldings();
-//    $openUrl = $this->driver->openURLActive('holdings') ? $this->driver->getOpenURL() : false;
-    $offlineMode = $this->ils()->getOfflineMode();
-    // Account for replace_other_urls setting
-    $urls = ($openUrl && $this->driver->replaceURLsWithOpenURL()) ? array() : $this->record($this->driver)->getLinkDetails();
-
-    // Set page title.
-    $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
+
+<?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
+
 <? if ($offlineMode == "ils-offline"): ?>
   <div class="alert alert-warning">
     <h2><?=$this->transEsc('ils_offline_title')?></h2>
@@ -27,24 +36,24 @@
   <? if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
     <? if (!$user): ?>
       <div class="alert alert-info">
-        <a href="<?=$this->currentPath()?>?login=true&amp;catalogLogin=true"><?=$this->transEsc("Login")?></a> <?=$this->transEsc("hold_login")?>
+        <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'Holdings')?>?login=true&amp;catalogLogin=true" data-lightbox><?=$this->transEsc("Login")?></a> <?=$this->transEsc("hold_login")?>
       </div>
     <? elseif (!$user->cat_username): ?>
       <div class="alert alert-info">
-        <?=$this->translate("hold_profile_html", array('%%url%%' => $this->currentPath() . '?catalogLogin=true'))?>
+        <?=$this->translate("hold_profile_html", array('%%url%%' => $this->recordLink()->getTabUrl($this->driver, 'Holdings') . '?catalogLogin=true'))?>
       </div>
     <? endif; ?>
   <? endif; ?>
 <? endif; ?>
 <? $holdingTitleHold = $this->driver->tryMethod('getRealTimeTitleHold'); if (!empty($holdingTitleHold)): ?>
-    <a class="placehold modal-link" title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
+    <a class="placehold" data-lightbox title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
 <? endif; ?>
 <?
     if (isset($holdings['']['items'][0]['eiz']) && $holdings['']['items'][0]['eiz'] == 1){
         print_r($this->driver->infoText());
     }
 ?>
-<? if (!empty($urls) || $openUrl): ?>
+<? if (!empty($urls) || $openUrlActive): ?>
   <h3 style="margin-bottom: -5px;"><?=$this->transEsc("On-line")?></h3>
   <? if (!empty($urls)): ?>
     <? foreach ($urls as $current): ?>
@@ -71,7 +80,7 @@
         ?>
     <? endforeach; ?>
   <? endif; ?>
-  <? if ($openUrl): ?><?=$this->openUrl($openUrl);?><? endif; ?>
+  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
   </br></br>
 <? endif; ?>
 <div class="holdings-filters breadcrumb-panel">
@@ -141,9 +150,16 @@
   <? endif; ?>
 
   <? foreach ($holding['items'] as $row): ?>
-    <? $check = (isset($row['check']) && $row['check']); ?>
-    <? $checkStorageRetrievalRequest = (isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest']); ?>
-    <? $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
+    <?
+      // AJAX Check record?
+      $check = isset($row['check']) && $row['check'];
+      $checkStorageRetrievalRequest = isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest'];
+      $checkILLRequest = isset($row['checkILLRequest']) && $row['checkILLRequest'];
+      // AJAX block record?
+      $block = !$check && isset($row['addLink']) && $row['addLink'] === 'block';
+      $blockStorageRetrievalRequest = !$checkStorageRetrievalRequest && isset($row['addStorageRetrievalRequestLink']) && $row['addStorageRetrievalRequestLink'];
+      $blockILLRequest = !$checkILLRequest && isset($row['addILLRequestLink']) && $row['addILLRequestLink'];
+    ?>
     <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
       <tr vocab="http://schema.org/" typeof="Offer">
         <td>
@@ -163,14 +179,14 @@
                 <? else: ?>
                     <span class="available-status" data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip'])?>"><?=$this->transEsc($row['status'])?></span>
                 <? endif; ?>
-              <? if (isset($row['link']) && $row['link']): ?>
-                <a style="display:inline-block" class="<?=$check ? 'checkRequest ' : ''?>inlineblock modal-link placehold" href="<?=$this->recordLink()->getRequestUrl($row['link'], '&order=1')?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
+              <? if (!$block && isset($row['link']) && $row['link']): ?>
+                <a class="<?=$check ? 'checkRequest ' : ''?>placehold" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
               <? endif; ?>
-              <? if (isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
-                <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?>modal-link placeStorageRetrievalRequest" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
+              <? if (!$blockStorageRetrievalRequest && isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
+                <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> placeStorageRetrievalRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
               <? endif; ?>
-              <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
-                <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock modal-link placeILLRequest" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+              <? if (!$blockILLRequest && isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
+                <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>placeILLRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
               <? endif; ?>
             <? else: ?>
               <? /* Begin Unavailable Items (Recalls) */ ?>
@@ -182,12 +198,12 @@
               <? if (isset($row['requests_placed']) && $row['requests_placed'] > 0): ?>
                 <span><?=$this->transEsc("Requests")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
               <? endif; ?>
-              <? if (isset($row['link']) && $row['link']): ?>
+              <? if (!$block && isset($row['link']) && $row['link']): ?>
                 <br>
                         <? if (isset($row['duedate']) && ($row['duedate']) && !(preg_match('#[\d]#',$row['duedate']))): ?>
                             <?=$this->transEsc($row['duedate'])?>
                         <? endif; ?>
-                <a class="<?=$check ? 'checkRequest' : ''?> modal-link inlineblock placehold loc" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>">&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?>&nbsp;</a>
+                <a class="<?=$check ? 'checkRequest' : ''?> inlineblock placehold loc" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>">&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?>&nbsp;</a>
 						<? endif; ?>
 			  <? if (!empty($row['queue'][0])): ?>
 				 <span class="text-danger" style="margin-left:10px;font-weight:bold;" data-toggle="tooltip" title="<?=$this->transEsc('waiting_in_queue')?>"><?=$row['queue'][0]?></span>
@@ -227,17 +243,17 @@
         <? elseif (empty($row['callnumber_second'])): ?>
 <!--        studovna casopisu-->
             <?if (preg_match("/3D/", $row['collection_desc']) > 0): ?>
-                <a class="map-link" href="lcc=periodicals">
+                <a href="" data-lightbox-href="http://vufind.test.ntkcz.cz/periodicals.php" data-lightbox >
             <? endif; ?>
         <? else: ?>
             <? if (preg_match("/koutek/", $row['collection_desc'])): ?>
                 <!-- don't show link, we don't have that image yet -->
             <? elseif (preg_match("/\\d/", $row['collection_desc']) > 0): ?>
                 <?$LCC = explode(" ", $row['callnumber_second']);?>
-                <a class="map-link" href="lcc=<?=$LCC[0]?>" title="<?if ($this->layout()->userLang === 'cs'):?><?=$this->escapeHtml($row['collection_desc'])?><? else: ?><?=$this->escapeHtml($row['collection'])?><? endif; ?>">
+                <a href=""  data-lightbox-href="http://vufind.test.ntkcz.cz/map.php?lcc=map<?=$LCC[0]?>" data-lightbox data-lightbox-title="<?if ($this->layout()->userLang === 'cs'):?><?=$this->escapeHtml($row['collection_desc'])?><? else: ?><?=$this->escapeHtml($row['collection'])?><? endif; ?>">
 <!--        studovna casopisu-->
             <? elseif (preg_match("/3D/", $row['collection_desc']) > 0): ?>
-                <a class="map-link" href="lcc=periodicals">
+                <a href="" data-lightbox-href="http://vufind.test.ntkcz.cz/periodicals.php" data-lightbox>
             <? endif; ?>
         <? endif; ?>
 
