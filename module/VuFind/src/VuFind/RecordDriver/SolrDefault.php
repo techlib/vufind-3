@@ -955,35 +955,6 @@ class SolrDefault extends AbstractBase
     }
 
     /**
-     * Get the OpenURL parameters to represent this record (useful for the
-     * title attribute of a COinS span tag).
-     *
-     * @param bool $overrideSupportsOpenUrl Flag to override checking
-     * supportsOpenUrl() (default is false)
-     *
-     * @return string OpenURL parameters.
-     */
-    public function getOpenUrl($overrideSupportsOpenUrl = false)
-    {
-        // stop here if this record does not support OpenURLs
-        if (!$overrideSupportsOpenUrl && !$this->supportsOpenUrl()) {
-            return false;
-        }
-
-        // Set up parameters based on the format of the record:
-        $format = $this->getOpenUrlFormat();
-        $method = "get{$format}OpenUrlParams";
-        if (method_exists($this, $method)) {
-            $params = $this->$method();
-        } else {
-            $params = $this->getUnknownFormatOpenUrlParams($format);
-        }
-
-        // Assemble the URL:
-        return http_build_query($params);
-    }
-
-    /**
      * Get the OpenURL parameters to represent this record for COinS even if
      * supportsOpenUrl() is false for this RecordDriver.
      *
@@ -1103,34 +1074,6 @@ class SolrDefault extends AbstractBase
     public function getHumanReadablePublicationDates()
     {
         return $this->getPublicationDates();
-    }
-
-    /**
-     * Get an array of publication detail lines combining information from
-     * getPublicationDates(), getPublishers() and getPlacesOfPublication().
-     *
-     * @return array
-     */
-    public function getPublicationDetails()
-    {
-        $places = $this->getPlacesOfPublication();
-        $names = $this->getPublishers();
-        $dates = $this->getHumanReadablePublicationDates();
-
-        $i = 0;
-        $retval = [];
-        while (isset($places[$i]) || isset($names[$i]) || isset($dates[$i])) {
-            // Build objects to represent each set of data; these will
-            // transform seamlessly into strings in the view layer.
-            $retval[] = new Response\PublicationDetails(
-                isset($places[$i]) ? $places[$i] : '',
-                isset($names[$i]) ? $names[$i] : '',
-                isset($dates[$i]) ? $dates[$i] : ''
-            );
-            $i++;
-        }
-
-        return $retval;
     }
 
     /**
@@ -1305,52 +1248,6 @@ class SolrDefault extends AbstractBase
     {
         // Not currently stored in the Solr index
         return [];
-    }
-
-    /**
-     * Returns one of three things: a full URL to a thumbnail preview of the record
-     * if an image is available in an external system; an array of parameters to
-     * send to VuFind's internal cover generator if no fixed URL exists; or false
-     * if no thumbnail can be generated.
-     *
-     * @param string $size Size of thumbnail (small, medium or large -- small is
-     * default).
-     *
-     * @return string|array|bool
-     */
-    public function getThumbnail($size = 'small')
-    {
-        if (isset($this->fields['thumbnail']) && $this->fields['thumbnail']) {
-            return $this->fields['thumbnail'];
-        }
-        $arr = [
-            'author'     => mb_substr($this->getPrimaryAuthor(), 0, 300, 'utf-8'),
-            'callnumber' => $this->getCallNumber(),
-            'size'       => $size,
-            'title'      => mb_substr($this->getTitle(), 0, 300, 'utf-8')
-        ];
-        if ($isbn = $this->getCleanISBN()) {
-            $arr['isbn'] = $isbn;
-        }
-        if ($issn = $this->getCleanISSN()) {
-            $arr['issn'] = $issn;
-        }
-        if ($oclc = $this->getCleanOCLCNum()) {
-            $arr['oclc'] = $oclc;
-        }
-        if ($upc = $this->getCleanUPC()) {
-            $arr['upc'] = $upc;
-        }
-        // If an ILS driver has injected extra details, check for IDs in there
-        // to fill gaps:
-        if ($ilsDetails = $this->getExtraDetail('ils_details')) {
-            foreach (['isbn', 'issn', 'oclc', 'upc'] as $key) {
-                if (!isset($arr[$key]) && isset($ilsDetails[$key])) {
-                    $arr[$key] = $ilsDetails[$key];
-                }
-            }
-        }
-        return $arr;
     }
 
     /**

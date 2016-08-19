@@ -70,22 +70,6 @@ class Factory
     }
 
     /**
-     * Factory for SolrDefault record driver.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrDefault
-     */
-    public static function getSolrDefault(ServiceManager $sm)
-    {
-        return new SolrDefault(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
-        );
-    }
-
-    /**
      * Factory for SolrMarc record driver.
      *
      * @param ServiceManager $sm Service manager.

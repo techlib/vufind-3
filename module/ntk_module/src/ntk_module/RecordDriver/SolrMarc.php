@@ -26,7 +26,7 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace ntk_module\RecordDriver;
-
+use VuFind\RecordDriver\SolrMarc as SolrMarcBase;
 
 /**
  * Model for MARC records in Solr.
@@ -37,63 +37,8 @@ namespace ntk_module\RecordDriver;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-class SolrMarc extends SolrDefault
+class SolrMarc extends SolrMarcBase
 {
-    /**
-     * Return an array of associative URL arrays with one or more of the following
-     * keys:
-     *
-     * <li>
-     *   <ul>desc: URL description text to display (optional)</ul>
-     *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
-     *   <ul>route: VuFind route to build URL with (required if 'url' is absent)</ul>
-     *   <ul>routeParams: Parameters for route (optional)</ul>
-     *   <ul>queryString: Query params to append after building route (optional)</ul>
-     * </li>
-     *
-     * @return array
-     */
-    public function getURLs()
-    {
-        $retVal = array();
-
-        // Which fields/subfields should we check for URLs?
-        $fieldsToCheck = array(
-            '856' => array('y', 'z', '3'),   // Standard URL
-            '555' => array('a')         // Cumulative index/finding aids
-        );
-
-        foreach ($fieldsToCheck as $field => $subfields) {
-            $urls = $this->marcRecord->getFields($field);
-            if ($urls) {
-                foreach ($urls as $url) {
-                    // Is there an address in the current field?
-                    $address = $url->getSubfield('u');
-                    if ($address) {
-                        $address = $address->getData();
-
-                        // Is there a description?  If not, just use the URL itself.
-                        foreach ($subfields as $current) {
-                            $desc = $url->getSubfield($current);
-                            if ($desc) {
-                                break;
-                            }
-                        }
-                        if ($desc) {
-                            $desc = $desc->getData();
-                        } else {
-                            $desc = $address;
-                        }
-
-                        $retVal[] = array('url' => $address, 'desc' => $desc);
-                    }
-                }
-            }
-        }
-
-        return $retVal;
-    }
-
     /**
      * Support functions for holding filters
      * Daniel Marecek, NTK
@@ -129,10 +74,166 @@ class SolrMarc extends SolrDefault
     // Informace o prejiti tistene formy casopisu do elektronicke podoby.
     public function infoText()
     {
-        $eiz_info = $this->marcRecord->getFields('530');
+        $eiz_info = $this->getMarcRecord()->getFields('530');
         foreach ($eiz_info as $info_eiz) {
                 $info_text = $info_eiz->getSubfield('a'); // Marc pole 530a
         }
         return $info_text->getData();
+    }
+
+    /**
+     * source document
+     */
+    public function getSourceDoc()
+    {
+        $sourcedoc = array (
+            "title" => isset($this->fields['article_resource_title']) ? $this->fields['article_resource_title'] : null,
+            "issn" => isset($this->fields['article_issn']) ? $this->fields['article_issn'] : null,
+            "related" => isset($this->fields['article_resource_related']) ? $this->fields['article_resource_related'] : null
+        );
+        return $sourcedoc;
+    }
+
+    /**
+     * EOD
+     */
+    public function isEOD()
+    {
+        // Get a representative publication date:
+        $pubDate = $this->getPublicationDates();
+        $pubDate = empty($pubDate) ? '' : $pubDate[0];
+
+        // Get format
+        $format=$this->getFormats();
+
+        // Get collection
+        $collection = $this->fields['collection'][0];
+
+        $topyear = date('Y')-100;
+        $has_url = $this->getURLs();
+
+        if (($pubDate < $topyear) && ($pubDate > 1500) && ($format[0] == 'Book') && ($collection == 'NTK') && (empty($has_url))) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Get Collection
+     *
+     * @return string
+     */
+    public function getCollection()
+    {
+        return isset($this->fields['collection'][0]) ?
+            $this->fields['collection'][0] : '';
+    }
+
+    /**
+     * Get the OpenURL parameters to represent this record (useful for the
+     * title attribute of a COinS span tag).
+     *
+     * @param bool $overrideSupportsOpenUrl Flag to override checking
+     * supportsOpenUrl() (default is false)
+     *
+     * @return string OpenURL parameters.
+     */
+    public function getOpenUrl($overrideSupportsOpenUrl = false)
+    {
+        // stop here if this record does not support OpenURLs
+        if (!$overrideSupportsOpenUrl && !$this->supportsOpenUrl()) {
+            return false;
+        }
+
+        // Set up parameters based on the format of the record:
+        $format = $this->getOpenUrlFormat();
+        // NTK - we don't display openurl for articles
+        if ($format == 'Article') { return false;}
+        $method = "get{$format}OpenUrlParams";
+        if (method_exists($this, $method)) {
+            $params = $this->$method();
+        } else {
+            $params = $this->getUnknownFormatOpenUrlParams($format);
+        }
+
+        // Assemble the URL:
+        return http_build_query($params);
+    }
+
+    /**
+     * Returns one of three things: a full URL to a thumbnail preview of the record
+     * if an image is available in an external system; an array of parameters to
+     * send to VuFind's internal cover generator if no fixed URL exists; or false
+     * if no thumbnail can be generated.
+     *
+     * @param string $size Size of thumbnail (small, medium or large -- small is
+     * default).
+     *
+     * @return string|array|bool
+     */
+    public function getThumbnail($size = 'small')
+    {
+        if (isset($this->fields['thumbnail']) && $this->fields['thumbnail']) {
+            return $this->fields['thumbnail'];
+        }
+        $arr = [
+            'author'     => mb_substr($this->getPrimaryAuthor(), 0, 300, 'utf-8'),
+            'callnumber' => $this->getCallNumber(),
+            'size'       => $size,
+            'title'      => mb_substr($this->getTitle(), 0, 300, 'utf-8')
+        ];
+        if ($isbn = $this->getCleanISBN()) {
+            $arr['isbn'] = $isbn;
+        }
+        if ($issn = $this->getCleanISSN()) {
+            $arr['issn'] = $issn;
+        }
+        if ($oclc = $this->getCleanOCLCNum()) {
+            $arr['oclc'] = $oclc;
+        }
+        if ($upc = $this->getCleanUPC()) {
+            $arr['upc'] = $upc;
+        }
+        if ($uid = $this->getUniqueID()) {
+            $arr['uid'] = $uid;
+        }
+        // If an ILS driver has injected extra details, check for IDs in there
+        // to fill gaps:
+        if ($ilsDetails = $this->getExtraDetail('ils_details')) {
+            foreach (['isbn', 'issn', 'oclc', 'upc'] as $key) {
+                if (!isset($arr[$key]) && isset($ilsDetails[$key])) {
+                    $arr[$key] = $ilsDetails[$key];
+                }
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     * Get an array of publication detail lines combining information from
+     * getPublicationDates(), getPublishers() and getPlacesOfPublication().
+     *
+     * @return array
+     */
+    public function getPublicationDetails()
+    {
+        $places = $this->getPlacesOfPublication();
+        $names = $this->getPublishers();
+        $dates = $this->getPublicationDates();
+        $i = 0;
+        $retval = [];
+        while (isset($places[$i]) || isset($names[$i]) || isset($dates[$i])) {
+            // Build objects to represent each set of data; these will
+            // transform seamlessly into strings in the view layer.
+            $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+                isset($places[$i]) ? $places[$i] : '',
+                isset($names[$i]) ? $names[$i] : '',
+                isset($dates[$i]) ? $dates[$i] : ''
+            );
+            $i++;
+        }
+
+        return $retval;
     }
 }

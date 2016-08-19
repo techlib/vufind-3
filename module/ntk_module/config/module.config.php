@@ -33,7 +33,6 @@ $config = array(
                 'factories' => array(
                     'missing' => 'ntk_module\RecordDriver\Factory::getMissing',
                     'solrauth' => 'ntk_module\RecordDriver\Factory::getSolrAuth',
-                    'solrdefault' => 'ntk_module\RecordDriver\Factory::getSolrDefault',
                     'solrmarc' => 'ntk_module\RecordDriver\Factory::getSolrMarc',
                 ),
             ),
