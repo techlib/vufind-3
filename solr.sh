@@ -61,7 +61,7 @@ fi
 
 if [ -z "$SOLR_PORT" ]
 then
-  SOLR_PORT="8282"
+  SOLR_PORT="8080"
 fi
 
 export SOLR_LOGS_DIR=$SOLR_LOGS_DIR
