@@ -269,6 +269,7 @@ public Set getFormat(Record record){
                 result.add("Book");
             }
             break;
+        /* not used in NTK
         // Component parts
         case 'A':
             result.add("BookComponentPart");
@@ -276,6 +277,7 @@ public Set getFormat(Record record){
         case 'B':
             result.add("SerialComponentPart");
             break;
+        */
         // Serial
         case 'S':
             // Look in 008 to determine what type of Continuing Resource
@@ -291,6 +293,12 @@ public Set getFormat(Record record){
                     result.add("Serial");
                     break;
             }
+    }
+
+    // Mark records with field 773 as articles:
+    DataField df773 = (DataField) record.getVariableField("773");
+    if (df773 != null) {
+        result.add("ArticleSerial");
     }
 
     // Nothing worked!
