@@ -29,20 +29,38 @@
     $hiddenFilters = $this->searchtabs()->getHiddenFilters($this->searchClassId, true);
   }
 
-  // Set up Javascript:
-  // Step 1: Define our search arrays so they are usuable in the javascript
-  $this->headScript()->appendScript($this->render('search/advanced/globals.phtml'));
-  // Step 2: Call the javascript to make use of the above
+  // Step 1: Load the javascript
   $this->headScript()->appendFile(
     isset($this->advancedSearchJsOverride) ? $this->advancedSearchJsOverride : 'advanced_search.js'
   );
-  // Step 3: Build the page
+  // Step 2: Build the page
   $this->headScript()->appendScript(
     $this->partial(
       isset($this->buildPageOverride) ? $this->buildPageOverride : 'search/advanced/build_page.phtml',
-      array('searchDetails' => $searchDetails)
+      ['options' => $this->options, 'searchDetails' => $searchDetails]
     )
   );
+  // Step 3: Define our search arrays so they are usuable in the javascript
+  $this->headScript()->appendScript($this->render('search/advanced/globals.phtml'));
+  
+  // Collect previous search queries
+  $setSearchGroups = [];
+  $setGroupCount = 0;
+  $setQueries = [];
+  if (isset($searchDetails) && is_object($searchDetails)) {
+    foreach ($searchDetails->getQueries() as $group=>$searchGroup) {
+      $setSearchGroups[$group] = $searchGroup->isNegated() ? 'NOT' : $searchGroup->getOperator();
+      if ($setGroupCount < $group) {
+        $setGroupCount = $group;
+      }
+      if (!isset($setQueries[$group])) {
+        $setQueries[$group] = [];
+      }
+      foreach ($searchGroup->getQueries() as $search) {
+        $setQueries[$group][] = $search;
+      }
+    }
+  }
 ?>
 
 <?=$this->flashmessages()?>
