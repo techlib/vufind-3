@@ -91,7 +91,8 @@
             </div>
         </fieldset>
 
-<!--        <input class="btn btn-primary" type="submit" value="--><?//= $this->transEsc('Find')?><!--">-->
+        <input class="btn btn-primary" style="width:100%;" type="submit" value="<?= $this->transEsc('Find')?>"/>
+        </br>
         <? if (isset($this->extraAdvancedControls)): ?>
           <?=$this->extraAdvancedControls ?>
           <input class="btn btn-primary" type="submit" value="<?= $this->transEsc('Find')?>"/>
