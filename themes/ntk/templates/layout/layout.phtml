@@ -175,12 +175,7 @@ JS;
             <?=$this->layout()->breadcrumbs ?>
           <? endif; ?>
           </ol>
-<!--    ukoncovaci div je pro detail zaznamu v jine sablone    -->
-        <? if ((strpos($_SERVER["REQUEST_URI"], 'Record') == true) && (strpos($_SERVER["REQUEST_URI"], 'Save') == false) && (strpos($_SERVER["REQUEST_URI"], 'Save') == false) && (strpos($_SERVER["REQUEST_URI"], 'Email') == false) && (strpos($_SERVER["REQUEST_URI"], 'Cite') == false) && (strpos($_SERVER["REQUEST_URI"], 'AddTag') == false) && (strpos($_SERVER["REQUEST_URI"], 'Records') == false) && (strpos($_SERVER["REQUEST_URI"], 'Hold') == false)): ?>
-        <? else: ?>
-            </div>
-        <? endif; ?>
-
+        </div>
         <? endif; ?>
 <!--    VNITREK STRANKY  -->
         <?=$this->layout()->content ?>
@@ -204,7 +199,6 @@ JS;
         </div>
       </div>
     </div>
-    <div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa"></i></div>
     <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
     <?=$this->googleanalytics()?>
     <?=$this->piwik()?>
