@@ -63,7 +63,8 @@ class SortFacetList extends AbstractHelper
                 . $results->getUrlQuery()->addFacet($field, $value['value']);
             $facets[$url] = $value['displayText'];
         }
-        natcasesort($facets);
+	// set sort by frequency, not alphabetical
+	// natcasesort($facets);
         return $facets;
     }
 }
