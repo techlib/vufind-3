@@ -174,10 +174,18 @@
 	      <? /* Begin Available Items (Holds) */ ?>
 	       <link property="availability" href="http://schema.org/InStock" />
                <!-- zobrazeni statusu -->
-                <? if (preg_match('/nepůjčuje se/',$row['status']) || preg_match('/Prezenčně/',$row['status'])): ?>
-                    <span class="blue-status" data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip'])?>"><?=$this->transEsc($row['status'])?></span>
+                <?if ($this->layout()->userLang === 'cs'):?>
+                    <? if (preg_match('/nepůjčuje se/',$row['status']) || preg_match('/Prezenčně/',$row['status'])): ?>
+                        <span class="blue-status" data-toggle="tooltip" title="<?=$row['tooltip']?>"><?=$$row['status']?></span>
+                    <? else: ?>
+                        <span class="available-status" data-toggle="tooltip" title="<?=$row['tooltip']?>"><?=$row['status']?></span>
+                    <? endif; ?>
                 <? else: ?>
-                    <span class="available-status" data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip'])?>"><?=$this->transEsc($row['status'])?></span>
+                    <? if (preg_match('/nepůjčuje se/',$row['status']) || preg_match('/Prezenčně/',$row['status'])): ?>
+                        <span class="blue-status" data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip'])?>"><?=$this->transEsc($row['status'])?></span>
+                    <? else: ?>
+                        <span class="available-status" data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip'])?>"><?=$this->transEsc($row['status'])?></span>
+                    <? endif; ?>
                 <? endif; ?>
               <? if (!$block && isset($row['link']) && $row['link']): ?>
                 <a class="<?=$check ? 'checkRequest ' : ''?>placehold" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
@@ -243,17 +251,17 @@
         <? elseif (empty($row['callnumber_second'])): ?>
 <!--        studovna casopisu-->
             <?if (preg_match("/3D/", $row['collection_desc']) > 0): ?>
-                <a href="" data-lightbox-href="http://vufind.test.ntkcz.cz/periodicals.php" data-lightbox >
+                <a href="" data-lightbox-href="/periodicals.php" data-lightbox >
             <? endif; ?>
         <? else: ?>
             <? if (preg_match("/koutek/", $row['collection_desc'])): ?>
                 <!-- don't show link, we don't have that image yet -->
             <? elseif (preg_match("/\\d/", $row['collection_desc']) > 0): ?>
                 <?$LCC = explode(" ", $row['callnumber_second']);?>
-                <a href=""  data-lightbox-href="http://vufind.test.ntkcz.cz/map.php?lcc=map<?=$LCC[0]?>" data-lightbox data-lightbox-title="<?if ($this->layout()->userLang === 'cs'):?><?=$this->escapeHtml($row['collection_desc'])?><? else: ?><?=$this->escapeHtml($row['collection'])?><? endif; ?>">
+                <a href=""  data-lightbox-href="/map.php?lcc=map<?=$LCC[0]?>" data-lightbox data-lightbox-title="<?if ($this->layout()->userLang === 'cs'):?><?=$this->escapeHtml($row['collection_desc'])?><? else: ?><?=$this->escapeHtml($row['collection'])?><? endif; ?>">
 <!--        studovna casopisu-->
             <? elseif (preg_match("/3D/", $row['collection_desc']) > 0): ?>
-                <a href="" data-lightbox-href="http://vufind.test.ntkcz.cz/periodicals.php" data-lightbox>
+                <a href="" data-lightbox-href="/periodicals.php" data-lightbox>
             <? endif; ?>
         <? endif; ?>
 
