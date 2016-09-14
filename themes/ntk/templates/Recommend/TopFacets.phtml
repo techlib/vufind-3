@@ -24,7 +24,7 @@
       <div class="col-xs-<?=floor(12/$topFacetSettings['cols'])?><? if ($iter == $corner+1) echo $moreClass ?>">
         <span class="badge-tag">
         <? if ($thisFacet['isApplied']): ?>
-          <?=$this->escapeHtml($thisFacet['displayText'])?> <i class="fa fa-check"></i>
+          <?=$this->transEsc($thisFacet['displayText'])?> <i class="fa fa-check"></i>
         <? else: ?>
           <a href="<?=$this->currentPath().$this->recommend->getResults()->getUrlQuery()->addFacet($title, $thisFacet['value'], $thisFacet['operator'])?>"><?=$this->transEsc($thisFacet['displayText'])?></a> <span class="badge badge-inverse"><?=number_format($thisFacet['count']) ?>
           <? if ($allowExclude): ?>
