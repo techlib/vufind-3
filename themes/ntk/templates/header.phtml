@@ -1,24 +1,29 @@
 <? $account = $this->auth()->getManager(); ?>
 <div class="l-header">
     <div class="container">
-	<div class="row">
+    <div class="row">
+            <?if ($this->layout()->userLang === 'cs'):?>
+                <? $url_web = 'https://techlib.cz/cs/';?>
+            <? else: ?>
+                <? $url_web = 'https://techlib.cz/en/';?>
+            <? endif; ?>
 <!--            odkaz na domovske strance   -->
             <?if (($_SERVER["REQUEST_URI"] == $this->url('home')) || ($_SERVER["REQUEST_URI"] == $this->url('home').'Search/Home') || ($_SERVER["REQUEST_URI"] == $this->url('home').'Summon/Home') || ($_SERVER["REQUEST_URI"] == $this->url('home').'MyResearch/Logout')): ?>
-	            <div class="col-xs-6">
-	                <a class="logo" href="https://techlib.cz">
+	            <div class="col-xs-7">
+                    <a class="logo" href=<?=$url_web?>>
 		                <img src="/themes/ntk/images/logo-ntk.png" alt="Národní Technická knihovna" title="Národní Technická knihovna">
 		            </a>
 					<a class="logo-secondary" href="http://www.vscht.cz/"><img src="/themes/ntk/images/logoVSCHT_stred_short.png" alt="VŠCHT" height="76px" title="VŠCHT"></a>
-					<a class="logo-secondary" href="http://www.uochb.cz/"><img src="/themes/ntk/images/uochb_vertikalni_300dpi.png" alt="ÚOCHB" height="76px" title="ÚOCHB"></a>
+                    <a class="logo-secondary" href="http://www.uochb.cz/" style="margin-top:62px;margin-bottom:0px;margin-left:25px"><img src="/themes/ntk/images/new_logo_uochb.png" alt="ÚOCHB" height="58px" title="ÚOCHB"></a>
 				</div>
             <? else: ?>
 <!--            odkaz vsude jinde   -->
             	<div class="col-xs-4">
-                	<a class="logo" href="https://techlib.cz">
+                    <a class="logo" href=<?=$url_web?>>
                     	<img src="/themes/ntk/images/logo-ntk.png" height="64px" alt="Národní Technická knihovna" title="Národní Technická knihovna">
                 	</a>
-                	<a class="logo-secondary" href="http://www.vscht.cz/"><img src="/themes/ntk/images/logoVSCHT_stred_short.png" alt="VŠCHT" height="48px" title="VŠCHT"></a>
-                	<a class="logo-secondary" href="http://www.uochb.cz/"><img src="/themes/ntk/images/uochb_vertikalni_300dpi.png" alt="ÚOCHB" height="48px" title="ÚOCHB"></a>
+                	<a class="logo-secondary" href="http://www.vscht.cz/"><img src="/themes/ntk/images/vscht-pic.png" alt="VŠCHT" height="48px" title="VŠCHT"></a>
+                	<a class="logo-secondary" href="http://www.uochb.cz/"><img src="/themes/ntk/images/uochb-pic.png" alt="ÚOCHB" height="53px" title="ÚOCHB" style="margin-top:-3px;"></a>
             	</div>
             <? endif; ?>
 	    <? if ($this->layout()->searchbox !== false): ?>
