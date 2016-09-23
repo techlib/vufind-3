@@ -102,16 +102,16 @@ function checkItemStatuses(container) {
                 item.find('.location').empty().append(result.location);
                 item.find('#linkhref').attr('data-lightbox-href', '../periodicals.php');
             } else if (
-                    (result.location == "Unknown") || (result.location == "Nezn&aacute;mo") ||
-                    (result.location == "Sklad historick&eacute;ho fondu") || (result.location == "Stack room of historical collection") ||
-                    (result.location == "Trezor historick&eacute;ho fondu") || (result.location == "Reading room of historical collection") ||
+                    (result.location == "Unknown") || (result.location == "Neznámo") ||
+                    (result.location == "Sklad historického fondu") || (result.location == "Stack room of historical collection") ||
+                    (result.location == "Trezor historického fondu") || (result.location == "Reading room of historical collection") ||
                     (result.location == "Badatelna historick&eacute;ho fondu") || (result.location == "Safe of historical collection") ||
-                    (result.location == "Depozit&aacute;\u0159") || (result.location == "Depository") ||
-                    (result.location == "Konzulta\u010dn&iacute; koutek, 2. NP") || (result.location == "Knowledge Navigation Corner, 2nd floor") ||
-                    (result.location == "V&iacute;ce um&iacute;st\u011bn&iacute;") || (result.location == "Multiple Locations") ||
+                    (result.location == "Depozitář") || (result.location == "Depository") ||
+                    (result.location == "Konzultační koutek, 2. NP") || (result.location == "Knowledge Navigation Corner, 2nd floor") ||
+                    (result.location == "Více umístění") || (result.location == "Multiple Locations") ||
                     (result.location == "Sklad") || (result.location == "Stack room") ||
-                    (result.location == "Voln&yacute; v&yacute;b\u011br, neza\u0159azeno") || (result.location == "Open stacks, uncategorized") ||
-                    (result.location == "&Uacute;OCHB &uacute;stav") || (result.location == "IOCB department") ||
+                    (result.location == "Volný výběr, nezařazeno") || (result.location == "Open stacks, uncategorized") ||
+                    (result.location == "ÚOCHB ústav") || (result.location == "IOCB department") ||
                     (result.location == "Book news, 4th floor") || (result.location == "Novinky, 4. NP")
                     ){
                     item.find('.location').unwrap();
