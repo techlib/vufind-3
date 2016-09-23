@@ -39,7 +39,7 @@
 
   <? if ($this->userlist()->getMode() !== 'disabled'): ?>
   <div class="btn-group" role="group" aria-label="...">
-    <a id="save-record" class="btn btn-sm btn-default <?=$controllerClass?>" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" rel="nofollow" title="<?=$this->transEsc('Add to favorites')?>"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to favorites')?></a></li>
+    <a id="save-record" class="btn btn-sm btn-default <?=$controllerClass?>" data-lightbox data-lightbox-title="<?=$this->escapeHtmlAttr(' ')?>" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" rel="nofollow" title="<?=$this->transEsc('Add to favorites')?>"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to favorites')?></a></li>
   </div>
   <? endif; ?>
   <? if (!empty($addThis)): ?>
