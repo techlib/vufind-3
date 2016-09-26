@@ -2,6 +2,7 @@
 return array(
     'extends' => 'root',
     'css' => array(
+        'naseptavac.css',
         'vendor/font-awesome.min.css',
         'vendor/bootstrap-slider.css',
         'print.css:print',
