@@ -176,7 +176,7 @@
                <!-- zobrazeni statusu -->
                 <?if ($this->layout()->userLang === 'cs'):?>
                     <? if (preg_match('/nepůjčuje se/',$row['status']) || preg_match('/Prezenčně/',$row['status'])): ?>
-                        <span class="blue-status" data-toggle="tooltip" title="<?=$row['tooltip']?>"><?=$$row['status']?></span>
+                        <span class="blue-status" data-toggle="tooltip" title="<?=$row['tooltip']?>"><?=$row['status']?></span>
                     <? else: ?>
                         <span class="available-status" data-toggle="tooltip" title="<?=$row['tooltip']?>"><?=$row['status']?></span>
                     <? endif; ?>
@@ -198,10 +198,20 @@
               <? endif; ?>
             <? else: ?>
               <? /* Begin Unavailable Items (Recalls) */ ?>
-              <span class="text-danger" data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip'])?>"><?=$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>
+              <?if ($this->layout()->userLang === 'cs'):?>
+                  <span class="text-danger" data-toggle="tooltip" title="<?=$row['tooltip']?>"><?=$row['status']?><link property="availability" href="http://schema.org/OutOfStock" /></span>
+              <? else: ?>
+                  <span class="text-danger" data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip'])?>"><?=$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>                   
+              <? endif; ?>
               <? if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><? endif; ?>
               <? if (isset($row['duedate']) && ($row['duedate']) && (preg_match('#[\d]#',$row['duedate']))): ?>
-                <br><span class="small" data-toggle="tooltip" title="<?=$this->transEsc('Exemplář má vypůjčený jiný zákazník. Pokud si ho rezervujete, bude pro vás připraven u Centrálního pultu ve 2. NP po vrácení předchozím zákazníkem.')?>"><?=$this->transEsc("checkedout")?>: <?=$this->escapeHtml($row['duedate'])?></span>
+                <br>
+                <?if ($this->layout()->userLang === 'cs'):?>
+                    <span class="small" data-toggle="tooltip" title="Exemplář má vypůjčený jiný zákazník. Pokud si ho rezervujete, bude pro vás připraven u Centrálního pultu ve 2. NP po vrácení předchozím zákazníkem.">
+                <? else: ?>                
+                    <span class="small" data-toggle="tooltip" title="<?=$this->transEsc('Exemplář má vypůjčený jiný zákazník. Pokud si ho rezervujete, bude pro vás připraven u Centrálního pultu ve 2. NP po vrácení předchozím zákazníkem.')?>">
+                <? endif; ?>
+                <?=$this->transEsc("checkedout")?>: <?=$this->escapeHtml($row['duedate'])?></span>
               <? endif; ?>
               <? if (isset($row['requests_placed']) && $row['requests_placed'] > 0): ?>
                 <span><?=$this->transEsc("Requests")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
@@ -272,7 +282,11 @@
             <?if ($this->layout()->userLang === 'cs'):?>
                 <span data-toggle="tooltip" title="<?=$this->transEsc($row['tooltip-vscht'])?>"><?=$this->escapeHtml($row['collection_desc'])?></span>
             <? else: ?>
-                <?=$this->escapeHtml($row['collection'])?>
+                <? if ($row['collection'] == '02'): ?>
+                    Safe of HC
+                <? else: ?>
+                    <?=$this->escapeHtml($row['collection'])?>
+                <? endif; ?>
             <? endif; ?>
 
          <? if ($row['availability']): ?>
