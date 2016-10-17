@@ -5428,7 +5428,7 @@ body.modal-open,
 
 .alert {
   padding: 15px;
-  margin-top: 25px;
+  //margin-top: 25px;
   margin-bottom: 5px;
   border: 1px solid transparent;
   border-radius: 2px;
