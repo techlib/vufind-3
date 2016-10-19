@@ -107,8 +107,7 @@ class Shibboleth extends AbstractBase
 
         // Has the user configured attributes to use for populating the user table?
         $attribsToCheck = [
-            'cat_username', 'cat_password', 'email', 'lastname', 'firstname',
-            'college', 'major', 'home_library'
+            'cat_username'
         ];
         foreach ($attribsToCheck as $attribute) {
             if (isset($shib->$attribute)) {
@@ -132,7 +131,7 @@ class Shibboleth extends AbstractBase
         if (!empty($user->cat_username)) {
             $user->saveCredentials(
                 $user->cat_username,
-                empty($catPassword) ? $user->getCatPassword() : $catPassword
+                empty($catPassword) ? NULL : $catPassword
             );
         }
 
