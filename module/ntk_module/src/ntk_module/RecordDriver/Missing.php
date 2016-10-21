@@ -59,4 +59,14 @@ class Missing extends MissingBase
         // Default -- message about missing title:
         return $this->translate('Title not available');
     }
+
+    /**
+     * Just formally: for missing record don't use any openUrl.
+     *
+     * author: Daniel Mareček (NTK)
+     */
+    public function getOpenUrl()
+    {
+        return false;
+    }
 }
