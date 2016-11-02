@@ -582,5 +582,8 @@ psh_facet:
   QueryFields:
     psh_facet:
       - [onephrase, 500]
+    psh_english:
+      - [onephrase, 500]
+
 
 
