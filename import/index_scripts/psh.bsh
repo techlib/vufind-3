@@ -18,13 +18,15 @@ import psh1.JSONParsing;
 PSH english
 
 */
+
+  JSONParsing jsp = new JSONParsing();
+  if (jsp.initpsh("/var/www/vufind/import/translation_maps/psh_engl_map.json")){
+     print("INIT"); 
+  }
+
     public Set getPSHen(Record record){
       LinkedHashSet result = new LinkedHashSet();
       String keyword;
-      JSONParsing jsp = new JSONParsing();
-	  if (jsp.initpsh("/var/www/vufind/import/translation_maps/psh_engl_map.json")){
-		  
-	  }
 
       List list650  = record.getVariableFields("650");
      
@@ -36,10 +38,11 @@ PSH english
                  if (df.getSubfield('2') != null) {
                   if (df.getSubfield('2').getData().toLowerCase().equals("psh")) {
                     keyword = df.getSubfield('a').getData();
-                    print ("kw:"+keyword);
+                    //print ("kw:"+keyword);
                     // replace white space to "_"
-                    print ("kwup:"+keyword.replace(" ", "_"));                          
-                    result.add(jsp.getpsh(keyword.replace(" ", "_")));
+                    //print ("kwup:"+keyword.replace(" ", "_"));                          
+                    result.add(jsp.getpsh(keyword));
+                    print("kw:"+keyword+" kw en:"+jsp.getpsh(keyword));
                   }
                  }
                 }
