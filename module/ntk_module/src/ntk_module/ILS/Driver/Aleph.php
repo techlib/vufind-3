@@ -615,7 +615,9 @@ class Aleph extends AlephBase
                     while ($result_for_requested[$i]['callnumber'] != $callnumber && $i < sizeof($result_for_requested)) {
                         $i++;
                     }
-                    $no_requested = $result_for_requested[$i]['requested']; // DM - pocet cekajicich ve fronte
+                    // DM - pocet cekajicich ve fronte
+                    preg_match('/\d+/',$result_for_requested[$i]['queue'],$matches);
+                    $no_requested = $matches[0];
                 }
             }
             $transList[] = array(
@@ -665,6 +667,8 @@ class Aleph extends AlephBase
             array('view' => 'full')
         );
         foreach ($xml->xpath('//hold-request') as $item) {
+            $order = preg_match('/\d+/',$item->status,$matches);
+            $order = $matches[0];
             $z37 = $item->z37;
             $z13 = $item->z13;
             $z30 = $item->z30;
@@ -710,7 +714,7 @@ class Aleph extends AlephBase
                     'delete' => $delete,
                     'create' => $this->parseDate($create),
                     'status' => $status,
-                    'position' => ltrim($seq, '0')
+                    'position' => $order
                 );
             }
         }
