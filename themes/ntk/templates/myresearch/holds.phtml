@@ -144,6 +144,9 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
             <? elseif (isset($ilsDetails['position'])): ?>
               <p><strong><?=$this->transEsc("hold_queue_position") ?>:</strong> <?=$this->escapeHtml($ilsDetails['position']) ?></p>
             <? endif; ?>
+            <? if (isset($ilsDetails['status'])): ?>
+                <p><strong><?=$this->transEsc("Status") ?>:</strong> <?=$this->transEsc($ilsDetails['status']) ?> <?=$this->escapeHtml($ilsDetails['endholddate']) ?> </p>
+            <? endif; ?>
             <? if (isset($ilsDetails['cancel_link'])): ?>
               <p><a href="<?=$this->escapeHtmlAttr($ilsDetails['cancel_link']) ?>"><?=$this->transEsc("hold_cancel") ?></a></p>
             <? endif; ?>

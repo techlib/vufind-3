@@ -660,6 +660,7 @@ class Aleph extends AlephBase
      */
     public function getMyHolds($user)
     {
+
         $userId = $user['id'];
         $holdList = array();
         $xml = $this->doRestDLFRequest(
@@ -667,9 +668,21 @@ class Aleph extends AlephBase
             array('view' => 'full')
         );
         foreach ($xml->xpath('//hold-request') as $item) {
-            $order = preg_match('/\d+/',$item->status,$matches);
-            $order = $matches[0];
-            $z37 = $item->z37;
+            $order = null;
+            $z37 = $item->z37;          
+            switch ($z37->{'z37-status'}){
+                case 'Waiting in queue':
+                    $order = preg_match('/\d+/',$item->status,$matches);
+                    $order = $matches[0];
+                    break;
+                case 'In process':
+                    $status= 'vyřizuje se';       
+                    break;
+                default:
+                    $status= 'k vyzvednutí na Centrálním pultu do';
+                    $endholddate= $this->parseDate($z37->{'z37-end-hold-date'});
+            }
+
             $z13 = $item->z13;
             $z30 = $item->z30;
             $delete = $item->xpath('@delete');
@@ -691,7 +704,6 @@ class Aleph extends AlephBase
                 $author = (string) $z13->{'z13-author'};
                 $isbn = (string) $z13->{'z13-isbn-issn'};
                 $barcode = (string) $z30->{'z30-barcode'};
-                $status = (string) $z37->{'z37-status'};
                 if ($holddate == "00000000") {
                     $holddate = null;
                 } else {
@@ -714,7 +726,8 @@ class Aleph extends AlephBase
                     'delete' => $delete,
                     'create' => $this->parseDate($create),
                     'status' => $status,
-                    'position' => $order
+                    'position' => $order,
+                    'endholddate' => $endholddate
                 );
             }
         }
