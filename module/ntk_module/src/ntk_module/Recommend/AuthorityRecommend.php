@@ -85,8 +85,11 @@ class AuthorityRecommend extends AuthorityRecommendBase implements RecommendInte
         // DM - simply request for psh-authority-search
         $request = new Parameters(
             array(
-                'lookfor' => array($this->lookfor),
-                'type' => array('Heading')
+                'join' => 'OR',
+                'lookfor0' => array($this->lookfor),
+                'lookfor1' => array($this->lookfor),
+                'type0' => array('Heading'),
+                'type1' => array('EnglishHeading')
             )
         );
 

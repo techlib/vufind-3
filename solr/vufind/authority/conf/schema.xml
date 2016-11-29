@@ -53,7 +53,7 @@
     <!-- NTK PSH -->   
     <field name="broader" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="narrower" type="string" indexed="true" stored="true" multiValued="true"/>
-    <field name="heading_english" type="string" indexed="false" stored="true" multiValued="true"/>
+    <field name="heading_english" type="string" indexed="true" stored="true" multiValued="true"/>
 
     <!-- Dynamic fields for customization without schema modification -->
     <dynamicField name="*_date" type="date" indexed="true" stored="true"/>
