@@ -14774,7 +14774,7 @@ function tab15_translate($slc, $isc, $ipsc) {
 	  	'loan' => 'N',
 	  	'request' => 'N',
 	  	'opac' => 'Y',
-	  	'tooltip' => 'Exemplář je trvale zapůjčen pracovníkovi ústavu UOCHB a nelze jej vypůjčit běžným způsobem. V případě zájmu kontaktujte pracovníka meziknihovních služeb UOCHB mailem lenka.haskovcova@techlib.cz nebo telefonicky 232 002 580.',
+	  	'tooltip' => 'Exemplář je trvale zapůjčen pracovníkovi ústavu UOCHB a nelze jej vypůjčit běžným způsobem. V případě zájmu kontaktujte pracovníka meziknihovních služeb UOCHB mailem mvs@uochb.cas.cz nebo telefonicky 232 002 434.',
 		),
 		'15A|81|' =>
 		array (
