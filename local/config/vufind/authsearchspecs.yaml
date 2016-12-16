@@ -69,11 +69,11 @@ MainHeading:
 
 EnglishHeading:
   DismaxFields:
-    - heading_english^750
+    - heading_english_keywords^750
   DismaxParams:
     - [bq, (record_type:"Personal Name" OR record_type:"Corporate Name")^500]
   QueryFields:
-    heading_keywords:
+    heading_english_keywords:
       - [onephrase, 1000]
       - [and, 750]
       - [or, 10]
