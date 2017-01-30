@@ -193,8 +193,9 @@
               <!-- DM - zobrazeni predmetovych hesel - posilaji se i dvoupismenkove kody, ktere se nezobrazuji -->
               <? if($i++ % 2 == 1 ): /* doupismenkovy kod - nezobrazuje se - prazdy prikaz */
               else:
-                $subject = trim($subject . ' ' . $subfield); ?>
-                <a title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($subfield))?></a>
+                $title = trim($subject . ' ' . $subfield . " OR " . $this->transSub($subfield, 'en'));
+                $subject = trim($subject . ' ' . $subfield . "\" OR \"" . $this->transSub($subfield, 'en')); ?>
+                <a title="<?=$this->escapeHtmlAttr($this->transEsc($title))?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($this->transEsc($subfield)))?></a>
               <? endif; ?>
             <? endforeach; ?>
           </div>

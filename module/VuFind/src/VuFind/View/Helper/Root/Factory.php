@@ -162,6 +162,23 @@ class Factory
     }
 
     /**
+     * Construct the TransSub helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return TransSub
+     */
+    public static function getTransSub(ServiceManager $sm)
+    {
+        // We want to construct a separate translator instance for this helper,
+        // since it configures different language/locale than the core shared
+        // instance!
+        return new TransSub(
+            \VuFind\Service\Factory::getTranslator($sm->getServiceLocator())
+        );
+    }
+
+    /**
      * Construct the Export helper.
      *
      * @param ServiceManager $sm Service manager.
