@@ -138,29 +138,12 @@
     </tr>
   <? endif; ?>
 
-  <? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
-    <? $contentDisplayed = true; ?>
+   <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
     <tr>
-      <th><?=$this->transEsc('ISBN')?>: </th>
-      <td>
-        <? foreach ($isbns as $field): ?>
-          <?=$this->escapeHtml($field)?><br/>
-        <? endforeach; ?>
-      </td>
+      <th><?=$this->transEsc('Edition')?>: </th>
+      <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
     </tr>
-  <? endif; ?>
-
-  <? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
-    <? $contentDisplayed = true; ?>
-    <tr>
-      <th><?=$this->transEsc('ISSN')?>: </th>
-      <td>
-        <? foreach ($issns as $field): ?>
-          <?=$this->escapeHtml($field)?><br/>
-        <? endforeach; ?>
-      </td>
-    </tr>
-  <? endif; ?>
+   <? endif; ?>
 
   <? $related = $this->driver->getRelationshipNotes(); if (!empty($related)): ?>
     <? $contentDisplayed = true; ?>

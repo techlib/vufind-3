@@ -148,12 +148,29 @@
         </td>
       </tr>
       <? endif; ?>
+    
+      <? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
+        <? $contentDisplayed = true; ?>
+        <tr>
+          <th><?=$this->transEsc('ISBN')?>: </th>
+          <td>
+            <? foreach ($isbns as $field): ?>
+              <?=$this->escapeHtml($field)?><br/>
+            <? endforeach; ?>
+          </td>
+        </tr>
+      <? endif; ?>
 
-      <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
-      <tr>
-        <th><?=$this->transEsc('Edition')?>: </th>
-        <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
-      </tr>
+      <? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
+        <? $contentDisplayed = true; ?>
+        <tr>
+          <th><?=$this->transEsc('ISSN')?>: </th>
+          <td>
+            <? foreach ($issns as $field): ?>
+              <?=$this->escapeHtml($field)?><br/>
+            <? endforeach; ?>
+          </td>
+        </tr>
       <? endif; ?>
 
       <?/* Display series section if at least one series exists. */?>
