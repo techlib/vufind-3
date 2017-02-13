@@ -91,13 +91,22 @@ class SolrMarc extends SolrDefault
      */
     public function getAllSubjectHeadings()
     {
-        // These are the fields that may contain subject headings:
-        $fields = [
-            '600', '610', '611', '630', '648', '650', '651', '653', '655', '656'
-        ];
-
         // This is all the collected data:
         $retval = [];
+
+        // Process marc.field 600 separately
+        // we need also subfield 'd' - date of birth and death
+        $results = $this->getMarcRecord()->getFields('600');
+        foreach ($results as $result) {
+            $sub_a = $result->getSubfield('a')->getData();
+            $sub_d = $result->getSubfield('d')->getData();
+            $retval[][] = $sub_a . " " . $sub_d;
+        }
+
+        // These are the fields that may contain subject headings:
+        $fields = [
+            '610', '611', '630', '648', '650', '651', '653', '655', '656'
+        ];
 
         // Try each MARC field one at a time:
         foreach ($fields as $field) {
