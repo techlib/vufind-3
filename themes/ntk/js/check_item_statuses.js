@@ -35,7 +35,14 @@ function checkItemStatuses(container) {
         return;
       }
       
-      item.find('.status').empty().append(result.availability_message);
+      if (result.status == 'Requested' || result.status == 'Vyřizuje se'
+          || result.status == 'Pravděp. ztráta' || result.status == 'Claimed missing'
+          || result.status == 'Ve zpracování' || result.status == 'In process'
+          || result.status == 'Objednáno' || result.status == 'On Order'){
+          item.find('.status').empty().append("<span class='label label-danger'>"+result.status+"</span>");
+      }else{
+          item.find('.status').empty().append(result.availability_message);
+      }
       if (typeof(result.full_status) != 'undefined'
         && result.full_status.length > 0
         && item.find('.callnumAndLocation').length > 0
