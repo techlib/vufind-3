@@ -99,8 +99,12 @@ class SolrMarc extends SolrDefault
         $results = $this->getMarcRecord()->getFields('600');
         foreach ($results as $result) {
             $sub_a = $result->getSubfield('a')->getData();
-            $sub_d = $result->getSubfield('d')->getData();
-            $retval[][] = $sub_a . " " . $sub_d;
+            if ($result->getSubfield('d') == false) {
+
+            }else{
+                $sub_d = $result->getSubfield('d')->getData();
+            }
+            $retval[][] = $sub_a . " " . (isset($sub_d)?$sub_d:'');
         }
 
         // These are the fields that may contain subject headings:
