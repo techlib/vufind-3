@@ -472,7 +472,7 @@ class Aleph extends AlephBase
                     'holdtype' => 'hold',
                     /* below are optional attributes*/
                     'collection' => (string)$collection, // umisteni jednotky anglicky
-                    'collection_desc' => (string)$collection_desc['desc'], // umisteni jednoty cesky
+                    'collection_desc' => isset($collection_desc['desc']) ? (string)$collection_desc['desc'] : (string)$collection, // umisteni jednoty cesky
                     'callnumber_second' => (string)$z30->{'z30-call-no-2'},
                     'sub_lib_desc' => (string)$item_status['sub_lib_desc'], // dilci kihovna
                     'requested' => (string)$requested,
