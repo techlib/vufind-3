@@ -20,7 +20,7 @@ PSH english
 */
 
   JSONParsing jsp = new JSONParsing();
-  if (jsp.initpsh("/var/www/vufind/import/translation_maps/psh_engl_map.json")){
+  if (jsp.initpsh("/var/www/vufind/local/import/translation_maps/psh_engl_map.json")){
      print("INIT"); 
   }
 
