@@ -260,7 +260,7 @@ class SolrMarc extends SolrMarcBase
                 }
                 $issn_form = preg_match('/\(.*\)/', $issn_texts, $matches);
                 if (empty($matches[0])){
-                    $issn_form = !empty($row->getSubfield('i')) ? $row->getSubfield('i')->getData() : null;
+                    $issn_form = empty($row->getSubfield('i')) ? null : $row->getSubfield('i')->getData();
                 }else{
                     $issn_form = $matches[0];
                 }
