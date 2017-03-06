@@ -266,6 +266,7 @@ class SolrMarc extends SolrMarcBase
                 }
                 $retval[] = Array ( 'text' => $issn_form, 'num' => $issn_num);
             }
+            $issn_texts=null;
         }
         return $retval;
     }
