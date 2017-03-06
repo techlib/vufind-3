@@ -236,4 +236,37 @@ class SolrMarc extends SolrMarcBase
 
         return $retval;
     }
+
+    /**
+     * Process marc field 776 for getting other forms of holdings.
+     * Examples: on-line, internet,..
+     *
+     * Return string in brackets.
+     * Author: Daniel Mareček, National Library of technology
+     */
+    public function issnForm()
+    {
+        $issn_texts=null;
+        $issn_form = $this->getMarcRecord()->getFields('776');
+        foreach ($issn_form as $row) {
+            $subfields = $row->getSubfields();
+            if ($subfields) {
+                foreach ($subfields as $subfield) {
+                    if ($subfield->getCode() == 'x') {
+                        $issn_num = $subfield->getData();
+                    }else{
+                        $issn_texts .= $subfield->getData();
+                    }
+                }
+                $issn_form = preg_match('/\(.*\)/', $issn_texts, $matches);
+                if (empty($matches[0])){
+                    $issn_form = !empty($row->getSubfield('i')) ? $row->getSubfield('i')->getData() : null;
+                }else{
+                    $issn_form = $matches[0];
+                }
+                $retval[] = Array ( 'text' => $issn_form, 'num' => $issn_num);
+            }
+        }
+        return $retval;
+    }
 }

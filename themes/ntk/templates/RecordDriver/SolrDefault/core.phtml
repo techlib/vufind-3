@@ -161,13 +161,23 @@
         </tr>
       <? endif; ?>
 
-      <? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
+      <? $issns = $this->driver->getISSNs();
+      $issn_form = $this->driver->issnForm(); 
+      if (!empty($issns)): ?>
         <? $contentDisplayed = true; ?>
         <tr>
           <th><?=$this->transEsc('ISSN')?>: </th>
           <td>
             <? foreach ($issns as $field): ?>
-              <?=$this->escapeHtml($field)?><br/>
+            <?=$this->escapeHtml($field)?>
+              <?
+                for ($i=0;$i<sizeof($issn_form);$i++) {
+                    if ($field == $issn_form[$i]['num']) {
+                        print_r($issn_form[$i]['text']);
+                    }
+                }
+              ?>
+            <br/>
             <? endforeach; ?>
           </td>
         </tr>
