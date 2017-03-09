@@ -148,6 +148,7 @@
    <field name="isbn" type="isn" indexed="true" stored="true" multiValued="true"/>
    <field name="issn" type="isn" indexed="true" stored="true" multiValued="true"/>
    <!-- NTK FIELDS -->
+   <field name="issn_ref" type="isn" indexed="true" stored="true" multiValued="true"/>
    <field name="article_resource_title" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="article_issn" type="isn" indexed="true" stored="true" multiValued="true"/>
    <field name="article_resource_related" type="string" indexed="true" stored="true" multiValued="true" />

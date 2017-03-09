@@ -273,4 +273,41 @@ class SolrMarc extends SolrMarcBase
         }
         return $retval;
     }
+
+    /**
+     * Get an array of ISSNs from fields 780x:785x (solr:issn_ref).
+     *
+     * @return array
+     */
+    public function getRefISSNs()
+    {
+        $issn_ref = isset($this->fields['issn_ref']) && is_array($this->fields['issn_ref']) ?
+        $this->fields['issn_ref'] : [];
+
+        $field780 = $this->getMarcRecord()->getFields('780');
+        $field785 = $this->getMarcRecord()->getFields('785');
+        $bothfields = array_merge($field780, $field785);
+
+        if (!empty($issn_ref)) {
+            for ($i=0; $i<sizeof($bothfields); $i++) {
+
+                foreach ($bothfields as $row) {
+                    // hledej v radku issn
+                    $sub_x = $row->getSubfield('x');
+                    if (!empty($sub_x)){
+                        $sub_x = $sub_x->getData();
+                        if (!empty($sub_x)){
+                            if ($sub_x == $issn_ref[$i]){
+                                $sub_t = $row->getSubfield('t')->getData();
+                                $vysledek[] = Array ( 'nazev' => $sub_t, 'issn' => $issn_ref[$i] );
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        return $vysledek;
+    }
+
 }
