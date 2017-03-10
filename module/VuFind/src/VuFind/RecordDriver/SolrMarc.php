@@ -105,6 +105,7 @@ class SolrMarc extends SolrDefault
                 $sub_d = $result->getSubfield('d')->getData();
             }
             $retval[][] = $sub_a . " " . (isset($sub_d)?$sub_d:'');
+            $sub_d = null;
         }
 
         // These are the fields that may contain subject headings:
