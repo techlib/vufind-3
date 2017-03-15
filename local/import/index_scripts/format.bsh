@@ -26,6 +26,17 @@ public Set getFormat(Record record){
     char formatCode2 = ' ';
     char formatCode4 = ' ';
 
+    // check for format:standard - field 655
+    DataField standard = (DataField) record.getVariableField("655");
+    if (standard != null) {
+        if (standard.getSubfield('a') != null){
+            if (standard.getSubfield('a').getData().toLowerCase().contains("normy")) {
+                result.add("Standard");
+                return result;
+            }
+        }
+    }
+
     // check if there's an h in the 245
     if (title != null) {
         if (title.getSubfield('h') != null){
