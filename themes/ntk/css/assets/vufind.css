@@ -428,6 +428,9 @@ div.form-horizontal {
 .book {
   background-image: url('../../images/BK.png');
 }
+.standardformat {
+  background-image: url('../../images/sd.png');
+}
 .article {
   background-image:url(../../images/RS.png);
   /*background-repeat:no-repeat;*/
