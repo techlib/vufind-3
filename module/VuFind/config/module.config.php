@@ -490,6 +490,7 @@ $config = [
                     'staffviewarray' => 'VuFind\RecordTab\StaffViewArray',
                     'staffviewmarc' => 'VuFind\RecordTab\StaffViewMARC',
                     'toc' => 'VuFind\RecordTab\TOC',
+                    'ntkpreview' => 'VuFind\RecordTab\NTKPreview',
                 ],
                 'initializers' => [
                     'ZfcRbac\Initializer\AuthorizationServiceInitializer'
@@ -654,7 +655,7 @@ $config = [
             ],
             'VuFind\RecordDriver\SolrMarc' => [
                 'tabs' => [
-                    'Holdings' => 'HoldingsILS', 'Description' => 'Description',
+                    'Holdings' => 'HoldingsILS', 'Description' => 'Description', 'NTKPreview' => 'NTKPreview',
                     'TOC' => 'TOC', 'UserComments' => 'UserComments',
                     'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
                     'Preview' => 'preview',
