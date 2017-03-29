@@ -188,7 +188,7 @@
    <field name="topic" type="text" indexed="true" stored="true" multiValued="true"/>
    <field name="topic_unstemmed" type="textProper" indexed="true" stored="false" multiValued="true"/>
    <field name="topic_facet" type="textFacet" indexed="true" stored="true" multiValued="true"/>
-   <field name="topic_browse" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="topic_browse" type="string" indexed="true" stored="false" multiValued="true"/>
    <field name="author_browse" type="string" indexed="true" stored="false" multiValued="true"/>
    <field name="genre" type="text" indexed="true" stored="true" multiValued="true"/>
    <field name="genre_facet" type="textFacet" indexed="true" stored="true" multiValued="true"/>
@@ -258,7 +258,7 @@
  <copyField source="allfields" dest="allfields_unstemmed"/>
  <copyField source="fulltext" dest="fulltext_unstemmed"/>
  <!-- CopyFields for Alphabetic Browse -->
- <!-- copyField source="topic" dest="topic_browse"/ -->
+ <copyField source="topic" dest="topic_browse"/>
  <copyField source="author" dest="author_browse"/>
  <copyField source="author2" dest="author_browse"/>
  <copyField source="author_corporate" dest="author_browse"/>
