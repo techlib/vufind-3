@@ -690,6 +690,16 @@ class SolrDefault extends AbstractBase
      */
     public function getISSNs()
     {
+        // delete issns, which are already displayed in series raws
+        $issn_serie = $this->getSeriesFromMARC(['490' => ['a']]);
+        foreach ($this->fields['issn'] as $ind => $issn) {
+            foreach ($issn_serie as $key => $value) {
+                if ( $value['issn'] == $issn) {
+                    unset($this->fields['issn'][$ind]);
+                }
+            }
+        }
+
         // If ISSN is in the index, it should automatically be an array... but if
         // it's not set at all, we should normalize the value to an empty array.
         return isset($this->fields['issn']) && is_array($this->fields['issn']) ?

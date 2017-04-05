@@ -213,6 +213,9 @@
             <? if (is_array($field)): ?>
               <? if (!empty($field['name'])): ?>
                 <a href="<?=$this->record($this->driver)->getLink('series', $field['name'])?>"><?=$this->escapeHtml($field['name'])?></a>
+                <? if (!empty($field['issn'])): ?>
+                  <?=$this->escapeHtml($field['issn'])?>
+                <? endif; ?>
                 <? if (!empty($field['number'])): ?>
                   <?=$this->escapeHtml($field['number'])?>
                 <? endif; ?>

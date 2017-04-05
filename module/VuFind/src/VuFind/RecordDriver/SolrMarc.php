@@ -489,7 +489,11 @@ class SolrMarc extends SolrDefault
                         if (isset($number[0])) {
                             $currentArray['number'] = $number[0];
                         }
-
+                        $issn
+                            = $this->getSubfieldArray($currentField, ['x']);
+                        if (isset($issn[0])) {
+                            $currentArray['issn'] = $issn[0];
+                        }
                         // Save the current match:
                         $matches[] = $currentArray;
                     }
