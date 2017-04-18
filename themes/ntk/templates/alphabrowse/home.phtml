@@ -104,10 +104,11 @@
             <td>
               <?
                 $extraDisplayArray = array();
-                foreach ($item['extras'][$extraName] as $j => $e):
-                  $extraDisplayArray = array_unique(array_merge($extraDisplayArray, $e));
-                endforeach;
-                echo empty($extraDisplayArray) ? '&nbsp;' : implode('<br />', $extraDisplayArray);
+                foreach ($item['extras'][$extraName] as $j => $e){
+                    foreach ($e as $value) {
+                        echo $this->transEsc($value).'<br />';
+                    }
+                }
               ?>
             </td>
           <? endforeach; ?>
