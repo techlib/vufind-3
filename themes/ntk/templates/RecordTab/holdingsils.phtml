@@ -192,7 +192,7 @@
                     <? endif; ?>
                 <? endif; ?>
               <? if (!$block && isset($row['link']) && $row['link']): ?>
-                <a class="<?=$check ? 'checkRequest ' : ''?>placehold" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
+                <a class="<?=$check ? 'checkRequest ' : ''?>placehold" data-lightbox data-lightbox-title="<?=$this->escapeHtmlAttr(' ')?>" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
               <? endif; ?>
               <? if (!$blockStorageRetrievalRequest && isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
                 <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> placeStorageRetrievalRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
@@ -225,7 +225,7 @@
                         <? if (isset($row['duedate']) && ($row['duedate']) && !(preg_match('#[\d]#',$row['duedate']))): ?>
                             <?=$this->transEsc($row['duedate'])?>
                         <? endif; ?>
-                <a class="<?=$check ? 'checkRequest' : ''?> inlineblock placehold loc" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>">&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?>&nbsp;</a>
+                <a class="<?=$check ? 'checkRequest' : ''?> inlineblock placehold loc" data-lightbox data-lightbox-title="<?=$this->escapeHtmlAttr(' ')?>" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>">&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?>&nbsp;</a>
 						<? endif; ?>
 			  <? if (!empty($row['queue'][0])): ?>
 				 <span class="text-danger" style="margin-left:10px;font-weight:bold;" data-toggle="tooltip" title="<?=$this->transEsc('waiting_in_queue')?>"><?=$row['queue'][0]?></span>
