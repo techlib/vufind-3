@@ -1,7 +1,7 @@
 <? /* Display thumbnail if appropriate: */ ?>
 <? if ($cover): ?>
   <? $id = $this->driver->getUniqueId(); ?>
-  <? if ($this->link): ?><a href="../img-box.php?uid=<?=$id?>" data-lightbox ><? endif; ?>
+  <? if ($this->link): ?><a href="../img-box.php?uid=<?=$id?>" data-lightbox data-lightbox-title="<?=$this->escapeHtmlAttr(' ')?>"><? endif; ?>
   <img alt="<?=$this->transEsc('Cover Image')?>" class="recordcover" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
   <? if ($this->link): ?></a><? endif; ?>
 <? else: ?>
