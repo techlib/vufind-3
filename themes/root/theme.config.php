@@ -16,6 +16,7 @@ return array(
             'feedback' => 'VuFind\View\Helper\Root\Factory::getFeedback',
             'flashmessages' => 'VuFind\View\Helper\Root\Factory::getFlashmessages',
             'googleanalytics' => 'VuFind\View\Helper\Root\Factory::getGoogleAnalytics',
+            'googletagmanager' => 'VuFind\View\Helper\Root\Factory::getGoogleTagManager',
             'helptext' => 'VuFind\View\Helper\Root\Factory::getHelpText',
             'historylabel' => 'VuFind\View\Helper\Root\Factory::getHistoryLabel',
             'ils' => 'VuFind\View\Helper\Root\Factory::getIls',

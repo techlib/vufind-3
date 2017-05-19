@@ -2,11 +2,14 @@
 <html lang="<?=$this->layout()->userLang?>">
   <head>
     <?$this->headThemeResources()?>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <?=$this->headMeta()?>
+
     <?=$this->headTitle()?>
+
     <?
       // Set up OpenSearch link:
       $this->headLink(
@@ -18,6 +21,7 @@
         )
       );
     ?>
+
     <!-- RTL styling -->
     <? if ($this->layout()->rtl) {
       $this->headLink()->appendStylesheet('vendor/bootstrap-rtl.min.css');
@@ -117,20 +121,31 @@
       $translations = $this->jsTranslations()->getJSON();
       $dsb = DEFAULT_SEARCH_BACKEND;
       $setupJS = <<<JS
-VuFind.path = '{$root}';
-VuFind.defaultSearchBackend = '{$dsb}';
-VuFind.addTranslations({$translations});
+  VuFind.path = '{$root}';
+      VuFind.defaultSearchBackend = '{$dsb}';
+      VuFind.addTranslations({$translations});
 JS;
       $this->headScript()->appendScript($setupJS);
     ?>
     <?=$this->headScript()?>
     <!-- schova modalni okno, ktere se zobrazuje pri nacitani stranky s historii vypujcek -->
-    <script>
-        $(window).load(function() {
-            /** this is come when complete page is fully loaded, including all frames, objects and images **/
-            $('#modal').modal('hide');
-        });
-    </script>
+<script>
+    $(window).load(function() {
+        /** this is come when complete page is fully loaded, including all frames, objects and images **/
+        $('#modal').modal('hide');
+    });
+</script>
+<script>
+    var dataLayer = [{website:"vufind"}];
+    if (userIsLoggedIn == true){
+      dataLayer.push({'loggedIn': '1'});
+    }else{
+      dataLayer.push({'loggedIn': '0'});
+    }
+    var lang="<?php echo $this->layout()->userLang; ?>";
+    dataLayer.push({'siteLanguage': lang});
+</script>
+    <?=$this->googletagmanager()?>
   </head>
   <body class="<?=$this->layoutClass('offcanvas-row')?><? if ($this->layout()->rtl): ?> rtl<? endif; ?>">
     <? // Set up the search box -- there are three possible cases:
@@ -200,7 +215,7 @@ JS;
       </div>
     </div>
     <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
-    <?=$this->googleanalytics()?>
+<!--    <?=$this->googleanalytics()?>-->
     <?=$this->piwik()?>
   </body>
 </html>
