@@ -107,12 +107,12 @@ class SolrMarc extends SolrMarcBase
         $format=$this->getFormats();
 
         // Get collection
-        $collection = $this->fields['collection'][0];
+        // $collection = $this->fields['collection'][0];
 
         $topyear = date('Y')-100;
         $has_url = $this->getURLs();
 
-        if (($pubDate < $topyear) && ($pubDate > 1500) && ($format[0] == 'Book') && ($collection == 'NTK') && (empty($has_url))) {
+        if (($pubDate < $topyear) && ($pubDate > 1500) && ($format[0] == 'Book') && (empty($has_url))) {
             return true;
         }else{
             return false;
