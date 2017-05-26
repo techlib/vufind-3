@@ -65,9 +65,15 @@ $lastLimit = $this->searchMemory()->getLastLimit($this->searchClassId);
 <!--        --><?// if ($this->layout()->searchbox !== false): ?>
 <!--            <div class="search-links">-->
 <!--        --><?// endif; ?>
-
+            <?
+                if (preg_match("/_ga/i", $_SERVER["REQUEST_URI"])) {
+                    $request_uri = preg_replace('/\?_ga.*/i', '', $_SERVER["REQUEST_URI"]);
+                } else {
+                    $request_uri = $_SERVER["REQUEST_URI"];
+                }
+            ?>
 <!--            odkaz na domovske strance   -->
-            <?if (($_SERVER["REQUEST_URI"] == $this->url('home')) || ($_SERVER["REQUEST_URI"] == $this->url('home').'Search/Home') || ($_SERVER["REQUEST_URI"] == $this->url('home').'Summon/Home')): ?>
+            <?if (($request_uri == $this->url('home')) || ($request_uri == $this->url('home').'Search/Home') || ($request_uri == $this->url('home').'Summon/Home')): ?>
                             <div class="form-group cell-minimal">
                                 <a class="btn btn-link" href="<?=$this->url($advSearch)?>"><?=$this->transEsc("Advanced Search")?></a>
                             </div>
@@ -131,7 +137,7 @@ $lastLimit = $this->searchMemory()->getLastLimit($this->searchClassId);
 
             <? endif; ?>
 
-            <?if (($_SERVER["REQUEST_URI"] == $this->url('home')) || ($_SERVER["REQUEST_URI"] == $this->url('home').'Search/Home') || ($_SERVER["REQUEST_URI"] == $this->url('home').'Summon/Home')): ?>
+            <?if (($request_uri == $this->url('home')) || ($request_uri == $this->url('home').'Search/Home') || ($request_uri == $this->url('home').'Summon/Home')): ?>
 
             <? else: ?>
                 </div>
