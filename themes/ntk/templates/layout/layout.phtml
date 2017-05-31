@@ -136,8 +136,20 @@ JS;
         $('#modal').modal('hide');
     });
 </script>
+<?
+      if (preg_match('/^10.1.(6[4-9])|(7[0-9]).[0-9]{1,3}/', $_SERVER['REMOTE_ADDR'])){
+        $UserType ='Kabelator';
+      }elseif(preg_match('/^10.0.[0-3].[0-9]{1,3}/', $_SERVER['REMOTE_ADDR'])){
+        $UserType ='Employee';
+      }elseif(preg_match('/^10./', $_SERVER['REMOTE_ADDR'])){
+        $UserType ='LocalVisitor';
+      }else{
+        $UserType ='External';
+      }
+?>
 <script>
-    var dataLayer = [{website:"vufind"}];
+    var dataLayer = [{website:'vufind'}];
+    dataLayer.push({'userType': '<?=$UserType?>'}); 
     if (userIsLoggedIn == true){
         if (userIsEmployee == true){
             dataLayer.push({'loggedIn': 'zamestnanec'});
