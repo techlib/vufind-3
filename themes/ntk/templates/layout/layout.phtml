@@ -105,8 +105,9 @@
           );
         }
         $this->headScript()->appendScript(
-          'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'
-        );
+          'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'.
+          'var userIsEmployee = ' . (($_SERVER['ntkCategory'] == 'Z') ? 'true' : 'false') . ';'
+       );
       }
 
       // Session keep-alive
@@ -138,9 +139,13 @@ JS;
 <script>
     var dataLayer = [{website:"vufind"}];
     if (userIsLoggedIn == true){
-      dataLayer.push({'loggedIn': '1'});
+        if (userIsEmployee == true){
+            dataLayer.push({'loggedIn': 'zamestnanec'});
+        }else{
+            dataLayer.push({'loggedIn': 'zakaznik'});
+        }
     }else{
-      dataLayer.push({'loggedIn': '0'});
+      dataLayer.push({'loggedIn': 'neprihlaseny'});
     }
     var lang="<?php echo $this->layout()->userLang; ?>";
     dataLayer.push({'siteLanguage': lang});
