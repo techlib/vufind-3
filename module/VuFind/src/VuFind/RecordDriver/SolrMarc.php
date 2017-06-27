@@ -133,7 +133,11 @@ class SolrMarc extends SolrDefault
                         // Numeric subfields are for control purposes and should not
                         // be displayed:
                         if (!is_numeric($subfield->getCode())) {
-                            $current[] = $subfield->getData();
+                            if (($field == '650') && ($subfield->getCode() == 'x')){
+                                // zde jsou ulozeny dvoupismenne zkratky psh, ktere nechceme zobrazovat
+                            }else{
+                                $current[] = $subfield->getData();
+                            }
                         }
                     }
                     // If we found at least one chunk, add a heading to our result:
