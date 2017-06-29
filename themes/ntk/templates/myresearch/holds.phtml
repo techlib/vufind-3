@@ -109,14 +109,10 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
             <? $pickupDisplay = ''; ?>
             <? $pickupTranslate = false; ?>
             <? if (isset($ilsDetails['location'])): ?>
-              <? if ($this->pickup): ?>
-                <? foreach ($this->pickup as $library): ?>
-                  <? if (isset($library['locationID']) && ($library['locationID'] == $ilsDetails['location'])): ?>
-                    <? $pickupDisplay = $library['locationDisplay']; ?>
+                <? if ($this->pickup): ?>
+                    <? $pickupDisplay = $this->transEsc($this->pickup[$iteration-1]); ?>
                     <? $pickupTranslate = true; ?>
-                  <? endif; ?>
-                <? endforeach; ?>
-              <? endif; ?>
+                <? endif; ?>
               <? if (empty($pickupDisplay)): ?>
                 <? $pickupDisplay = $this->transEsc($this->pickup[0]); ?> <!--DM - misto vyzvednuti, default z Aleph.ini (preferred_pick_up_locations)-->
               <? endif; ?>

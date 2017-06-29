@@ -926,11 +926,12 @@ class MyResearchController extends AbstractBase
 
             // Build record driver:
             $recordList[] = $this->getDriverForILSRecord($current);
+            $pickup[] = $current['location'];
         }
 
         // Get List of PickUp Libraries based on patron's home library
         try {
-            $view->pickup = $catalog->getPickUpLocations($patron);
+            $view->pickup = $pickup;
         } catch (\Exception $e) {
             // Do nothing; if we're unable to load information about pickup
             // locations, they are not supported and we should ignore them.
