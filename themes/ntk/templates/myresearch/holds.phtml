@@ -110,7 +110,7 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
             <? $pickupTranslate = false; ?>
             <? if (isset($ilsDetails['location'])): ?>
                 <? if ($this->pickup): ?>
-                    <? $pickupDisplay = $this->transEsc($this->pickup[$iteration-1]); ?>
+                    <? $pickupDisplay = $this->pickup[$iteration-1]; ?>
                     <? $pickupTranslate = true; ?>
                 <? endif; ?>
               <? if (empty($pickupDisplay)): ?>
