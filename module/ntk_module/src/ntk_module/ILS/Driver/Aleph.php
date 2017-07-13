@@ -679,7 +679,7 @@ class Aleph extends AlephBase
                     $status= 'vyřizuje se';       
                     break;
                 default:
-                    $status= 'k vyzvednutí na Centrálním pultu do';
+                    $status= 'k vyzvednutí do';
                     $endholddate= $this->parseDate($z37->{'z37-end-hold-date'});
             }
 
