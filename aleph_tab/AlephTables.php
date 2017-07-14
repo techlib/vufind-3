@@ -14742,7 +14742,7 @@ function tab15_translate($slc, $isc, $ipsc) {
 		'loan' => 'Y',
 		'request' => 'C',
 		'opac' => 'Y',
-		'tooltip' => 'Exemplář je uložen ve skladu a je možné si ho půjčit na 28 dní domů. Objednané exempláře jsou připraveny k vyzvednutí u Centrálního pultu ve 2.NP.',
+		'tooltip' => 'Exemplář je uložen ve skladu a je možné si ho půjčit na 28 dní domů. Objednané exempláře jsou připraveny k vyzvednutí na Regálu Rezervací 3A ve 3.NP.',
 		),
 		'15A|14|' => 
 		array (
@@ -14750,7 +14750,7 @@ function tab15_translate($slc, $isc, $ipsc) {
 		'loan' => 'Y',
 		'request' => 'C',
 		'opac' => 'Y',
-		'tooltip' => 'Exemplář je uložen ve skladu a je možné si ho půjčit na 28 dní domů. Objednané exempláře jsou připraveny k vyzvednutí u Centrálního pultu ve 2.NP.',
+		'tooltip' => 'Exemplář je uložen ve skladu a je možné si ho půjčit na 28 dní domů. Objednané exempláře jsou připraveny k vyzvednutí na Regálu Rezervací 3A ve 3.NP.',
 		),
 		'15A|22|' =>
 		array (
