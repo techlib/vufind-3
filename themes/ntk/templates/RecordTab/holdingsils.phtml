@@ -209,11 +209,18 @@
               <? endif; ?>
               <? if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><? endif; ?>
               <? if (isset($row['duedate']) && ($row['duedate']) && (preg_match('#[\d]#',$row['duedate']))): ?>
-                <br>
+                  <br>
+                <? $formats = $this->driver->getFormats();
+                    if ($formats[0] == "Physical Object"){
+                       $tooltip = "Exemplář má vypůjčený jiný zákazník. Pokud si ho rezervujete, bude pro vás připraven na Centrálním pultu ve 2. NP po vrácení předchozím zákazníkem.";
+                    }else{
+                        $tooltip = "Exemplář má vypůjčený jiný zákazník. Pokud si ho rezervujete, bude pro vás připraven na Regálu Rezervací 3A ve 3. NP po vrácení předchozím zákazníkem.";
+                    }
+                ?>
                 <?if ($this->layout()->userLang === 'cs'):?>
-                    <span class="small" data-toggle="tooltip" title="Exemplář má vypůjčený jiný zákazník. Pokud si ho rezervujete, bude pro vás připraven na Regálu Rezervací 3A ve 3. NP po vrácení předchozím zákazníkem.">
+                    <span class="small" data-toggle="tooltip" title="<?=$tooltip?>">
                 <? else: ?>                
-                    <span class="small" data-toggle="tooltip" title="<?=$this->transEsc('Exemplář má vypůjčený jiný zákazník. Pokud si ho rezervujete, bude pro vás připraven na Regálu Rezervací 3A ve 3. NP po vrácení předchozím zákazníkem.')?>">
+                    <span class="small" data-toggle="tooltip" title="<?=$this->transEsc($tooltip)?>">
                 <? endif; ?>
                 <?=$this->transEsc("checkedout")?>: <?=$this->escapeHtml($row['duedate'])?></span>
               <? endif; ?>
