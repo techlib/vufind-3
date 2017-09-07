@@ -356,6 +356,8 @@ AllFields:
     - description
     - isbn
     - issn
+  DismaxParams:
+    - [bq, format:"Standard(format)"^-10000]
   QueryFields:
     0:
       0:
