@@ -298,7 +298,12 @@ class SolrMarc extends SolrMarcBase
                         $sub_x = $sub_x->getData();
                         if (!empty($sub_x)){
                             if ($sub_x == $issn_ref[$i]){
-                                $sub_t = $row->getSubfield('t')->getData();
+                                $sub_t = $row->getSubfield('t');
+                                if (!empty($sub_t)){
+                                    $sub_t = $sub_t->getData();
+                                }else{
+                                    $sub_t = 'chybí v MARC';
+                                }
                                 $vysledek[] = Array ( 'nazev' => $sub_t, 'issn' => $issn_ref[$i] );
                             }
                         }
