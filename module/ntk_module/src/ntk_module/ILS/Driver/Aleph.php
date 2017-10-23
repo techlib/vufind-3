@@ -617,7 +617,7 @@ class Aleph extends AlephBase
                     }
                     // DM - pocet cekajicich ve fronte
                     preg_match('/\d+/',$result_for_requested[$i]['queue'],$matches);
-                    $no_requested = $matches[0];
+                    $no_requested = isset($matches[0])?$matches[0]:null;
                 }
             }
             $transList[] = array(

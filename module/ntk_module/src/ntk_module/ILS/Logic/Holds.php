@@ -221,7 +221,7 @@ class Holds extends HoldsBase
 
                     $datum1 = preg_match('/([0-9]{4})/',$a['description'], $matches1);
                     $datum2 = preg_match('/([0-9]{4})/',$b['description'], $matches2);
-                    $vysledek = $matches2[0] - $matches1[0];
+                    $vysledek = (isset($matches2[0])?$matches2[0]:0) - (isset($matches1[0])?$matches1[0]:0);
 
                     return $vysledek;
                 });

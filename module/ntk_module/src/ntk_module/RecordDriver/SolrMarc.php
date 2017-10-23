@@ -267,7 +267,7 @@ class SolrMarc extends SolrMarcBase
                 }else{
                     $issn_form = $matches[0];
                 }
-                $retval[] = Array ( 'text' => $issn_form, 'num' => $issn_num);
+                $retval[] = Array ( 'text' => $issn_form, 'num' => isset($issn_num)?$issn_num:null);
             }
             $issn_texts=null;
         }
@@ -312,7 +312,7 @@ class SolrMarc extends SolrMarcBase
 
             }
         }
-        return $vysledek;
+        return isset($vysledek)?$vysledek:null;
     }
 
 }
