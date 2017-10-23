@@ -931,7 +931,7 @@ class MyResearchController extends AbstractBase
 
         // Get List of PickUp Libraries based on patron's home library
         try {
-            $view->pickup = $pickup;
+            $view->pickup = isset($pickup)?$pickup:null;
         } catch (\Exception $e) {
             // Do nothing; if we're unable to load information about pickup
             // locations, they are not supported and we should ignore them.

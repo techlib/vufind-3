@@ -297,7 +297,7 @@ class SolrMarc extends SolrMarcBase
                     if (!empty($sub_x)){
                         $sub_x = $sub_x->getData();
                         if (!empty($sub_x)){
-                            if ($sub_x == $issn_ref[$i]){
+                            if ($sub_x == (isset($issn_ref[$i])?$issn_ref[$i]:null)){
                                 $sub_t = $row->getSubfield('t');
                                 if (!empty($sub_t)){
                                     $sub_t = $sub_t->getData();

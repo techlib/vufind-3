@@ -725,9 +725,9 @@ class Aleph extends AlephBase
                     'holddate' => $holddate,
                     'delete' => $delete,
                     'create' => $this->parseDate($create),
-                    'status' => $status,
+                    'status' => isset($status)?$status:null,
                     'position' => $order,
-                    'endholddate' => $endholddate
+                    'endholddate' => isset($endholddate)?$endholddate:null,
                 );
             }
         }
