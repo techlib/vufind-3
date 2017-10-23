@@ -271,7 +271,7 @@ class SolrMarc extends SolrMarcBase
             }
             $issn_texts=null;
         }
-        return $retval;
+        return isset($retval)?$retval:null;
     }
 
     /**

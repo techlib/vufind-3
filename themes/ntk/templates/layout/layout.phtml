@@ -106,7 +106,7 @@
         }
         $this->headScript()->appendScript(
           'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'.
-          'var userIsEmployee = ' . (($_SERVER['ntkCategory'] == 'Z') ? 'true' : 'false') . ';'
+          'var userIsEmployee = ' . ((isset($_SERVER['ntkCategory']) == 'Z') ? 'true' : 'false') . ';'
        );
       }
 
