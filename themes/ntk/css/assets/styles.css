@@ -42,7 +42,9 @@ html {
 
 body {
   margin: 0;
-  min-height:100%;
+  height:100%;
+  display: flex;
+  flex-direction: column;
 }
 
 a:focus {
@@ -8315,7 +8317,7 @@ body:before {
 }
 
 .l-body {
-  padding-bottom: 270px;
+  flex: 1 0 auto;
 }
 
 @media (min-width: 992px) {
@@ -8373,9 +8375,7 @@ body:before {
 }
 
 .l-footer {
-  position: absolute;
   width:100%;
-  //height:230px;
   bottom:0;
   padding: 10px 0;
   background-color: #eee;
