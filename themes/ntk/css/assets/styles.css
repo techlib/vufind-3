@@ -8380,6 +8380,7 @@ body:before {
   padding: 10px 0;
   background-color: #eee;
   background-image: url('../../images/grunge_wall.png');
+  position:relative;
 }
 
 @media all and (-webkit-min-device-pixel-ratio: 1.5) {
