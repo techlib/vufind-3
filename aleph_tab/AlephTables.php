@@ -32,6 +32,10 @@ function tab40_translate($collection, $sublib) {
 		'004|' => 
 		array (
 		'desc' => 'Novinky 4.NP',
+        ),
+		'005|' =>
+		array (
+		'desc' => 'Novinky 6.NP',
 		),
 		'3A001|' => 
 		array (
