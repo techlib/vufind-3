@@ -110,7 +110,7 @@ class SolrMarc extends SolrDefault
 
         // These are the fields that may contain subject headings:
         $fields = [
-            '610', '611', '630', '648', '650', '651', '653', '655', '656'
+            '610', '611', '630', '648', '650', '651', '653', '656'
         ];
 
         // Try each MARC field one at a time:

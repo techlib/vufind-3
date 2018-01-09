@@ -315,4 +315,13 @@ class SolrMarc extends SolrMarcBase
         return isset($vysledek)?$vysledek:null;
     }
 
+    public function get655a()
+    {
+        $results = $this->getMarcRecord()->getFields('655');
+        $sub_a = array();
+        foreach ($results as $result) {
+            $sub_a[] = $result->getSubfield('a')->getData();
+        }
+        return $sub_a;
+    }
 }

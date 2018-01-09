@@ -145,6 +145,13 @@
         </tr>
       <? endif; ?>
 
+      <? $document_type = $this->driver->get655a(); if (!empty($document_type)): ?>
+        <tr>
+          <th><?=$this->transEsc('document_type')?>: </th>
+          <td><? foreach ($document_type as $item): ?><?= $this->transEsc($item)?><br/><? endforeach; ?></td>
+        </tr>
+      <? endif; ?>
+
       <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
       <tr>
         <th><?=$this->transEsc('Published')?>: </th>
