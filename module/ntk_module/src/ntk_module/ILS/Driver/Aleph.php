@@ -700,6 +700,7 @@ class Aleph extends AlephBase
                 $expire = (string) $z37->{'z37-end-request-date'};
                 $create = (string) $z37->{'z37-open-date'};
                 $holddate = (string) $z37->{'z37-hold-date'};
+                $shelfnumber = substr($z37->{'z37-request-number'},-3);
                 $title = (string) $z13->{'z13-title'};
                 $author = (string) $z13->{'z13-author'};
                 $isbn = (string) $z13->{'z13-isbn-issn'};
@@ -728,6 +729,7 @@ class Aleph extends AlephBase
                     'status' => isset($status)?$status:null,
                     'position' => $order,
                     'endholddate' => isset($endholddate)?$endholddate:null,
+                    'shelfnumber' => $shelfnumber,
                 );
             }
         }
