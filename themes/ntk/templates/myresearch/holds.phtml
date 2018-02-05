@@ -119,7 +119,7 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
             <? endif; ?>
             <? if (!empty($pickupDisplay)): ?>
               <strong><?=$this->transEsc('pick_up_location') ?>:</strong>
-              <?=$pickupTranslate ? $this->transEsc($pickupDisplay) : $this->escapeHtml($pickupDisplay)?>
+              <?=$pickupTranslate ? $this->transEsc($pickupDisplay) : $this->escapeHtml($pickupDisplay)?> - <b><?=$ilsDetails['shelfnumber'][0]?><?=$ilsDetails['shelfnumber'][1]?>-<?=$ilsDetails['shelfnumber'][2]?></b>
               <br />
             <? endif; ?>
 
